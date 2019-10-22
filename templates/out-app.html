@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>CosmosTv</title>
+
+	<link rel="stylesheet" href="static/styles/mdc.css">
+	<link rel="stylesheet" href="static/styles/app.css">
+
+	<!-- COMPONENTS -->
+<link rel="stylesheet" href="static/components/tabs/tabs-stl.css">	<!-- <link rel="stylesheet" href="static/components/tabs/tabs-stl.css"> -->
+</head>
+<body>
+	<div id="app-container">
+		<div id="app">
+			<div class="pageTab" id="control-pad">
+				<h1>Control Pad</h1>
+				<p id="info"></p>
+			</div>
+			<div class="pageTab" id="home">
+				<h1>Home</h1>
+			</div>
+			<div class="pageTab" id="movies">
+				<h1>Movies</h1>
+			</div>
+		</div>
+	</div>
+	
+<div id="navbar" class="mdc-elevation--z1">
+	<div class="navbar-btn">
+		<button class="mdc-button">
+			<span class="mdc-button__label">Control Pad</span>
+		</button>
+	</div>
+	<div class="navbar-btn">
+		<button class="mdc-button">
+			<span class="mdc-button__label">Home</span>
+		</button>
+	</div>
+	<div class="navbar-btn">
+		<button class="mdc-button">
+			<span class="mdc-button__label">Movies</span>
+		</button>
+	</div>
+</div></body>
+
+	<!-- SCRIPTS -->
+	<script src="static/libs/socketio.js"></script>
+	<script src="static/libs/jquery.js"></script>
+	<script src="static/libs/mdc.js"></script>
+	<script src="static/libs/libs.js"></script>
+	<script src="static/framework.js"></script>
+
+<!-- tabs has been loaded-->	<!-- COMPONENTS -->
+<script src="static/components/tabs/tabs-scp.js"></script>	<!-- <script src="static/components/tabs/tabs-scp.js"></script> -->
+</html>
