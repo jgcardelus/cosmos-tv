@@ -19,7 +19,12 @@ function connectServer()
 
 function loadMDC()
 {
-    $('.mdc-button').attr('data-mdc-auto-init', 'MDCRipple');
+    $('.button').addClass('mdc-ripple-surface');
+    $('.button').attr('data-mdc-auto-init', 'MDCRipple');
+
+    $('.fab').addClass('mdc-ripple-surface');
+    $('.fab').attr('data-mdc-auto-init', 'MDCRipple');
+
     $('.mdc-icon-button').attr('data-mdc-auto-init', 'MDCRipple');
     $('.mdc-fab').attr('data-mdc-auto-init', 'MDCRipple');
 
@@ -45,6 +50,4 @@ $(window).on('resize', function()
 {
 	windowWidth = $(window).width();
 	windowHeight = $(window).height();
-
-	pages.change(actualPage);
 });

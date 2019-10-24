@@ -20,22 +20,28 @@
 </head>
 
 <body>
-	<div id="app-container">
-		<div id="app">
-			<div class="pageTab" id="control-pad">
-				<h1>Control Pad</h1>
-				<p id="info"></p>
+	<div id="app" class="tabs-container">
+		<div class="tabs">
+			<div class="tab" id="control-pad">
+				<h1 class="header">Control Pad</h1>
 			</div>
-			{{home}}
-			<div class="pageTab" id="movies">
-				<h1>Movies</h1>
+			<div class="tab" id="home">
+				<h1 class="header">Home</h1>
+				<button type="button" class="button button-icon button-space primary round">
+					<span class="icons">forward</span>
+					<p>Content</p>
+				</button>
+				<button type="button" class="fab">
+					<span class="icons">forward</span>
+				</button>
 			</div>
+			{{movies}}
 		</div>
 	</div>
 
-	{{tabs}}
+	{{navbar}}
 </body>
-
+{{tabs}}
 <!-- SCRIPTS -->
 <script src="static/libs/socketio.js"></script>
 <script src="static/libs/jquery.js"></script>

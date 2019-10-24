@@ -1,10 +1,19 @@
 :root {
-    --padding-size: 16px;
+    --border-size: 1rem;
+    --section-size: 2rem;
+    --border-radius: 15px;
+    --primary: #314DF9;
+    --secondary: #FF016C;
+    --terciary: #FFEB3B;
+    --primary-bg: #ffffff;
+    --secondary-bg: #FFFF72;
+    --font-dark: #000000;
+    --font-light: #ffffff;
 }
 
 * {
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: auto;
 }
 
 body {
@@ -12,35 +21,197 @@ body {
     margin: 0;
     width: 100vw;
     min-height: 100vh;
+    background-color: var(--primary-bg);
+    overflow-x: hidden;
 }
 
+/* SECTION HEADER */
 h1 {
-    font-size: 2.25rem;
+    font-size: 3rem;
+    font-family: 'Title';
+    margin: 0;
+    padding: 0;
+    padding-top: var(--section-size);
+    padding-bottom: var(--section-size);
+}
+
+.header {
+    width: calc(100vw - var(--border-size));
+    height: auto;
+    overflow-x: hidden;
+    margin-top: var(--border-size);
+    margin-left: var(--border-size);
+}
+
+/* SUBTITLE */
+h2 {
+    margin: 0;
+    font-size: 1.5rem;
     font-family: 'Roboto Bold';
 }
 
-h2 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-family: 'Roboto Medium';
+.extra {
+    font-family: 'Roboto';
 }
 
-.subtitle {
-    padding-top: calc(var(--padding-size) * 2);
-    padding-bottom: 5px;
-}
-
-h3 {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin: 0;
-    font-size: 1.25rem;
-    font-family: 'Roboto Light';
-    color: #2b2b2b;
-}
-
+/* PARAGRAPHS */
 p {
     font-family: 'Roboto';
-    font-size: 1rem;
-    color: #2b2b2b;
+    font-size: 1.125rem;
+    margin: 0;
+    padding: 0;
+}
+
+/* ROUND CORNERS COMBOS */
+.round {
+    border-radius: var(--border-radius);
+}
+
+.round-left {
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.round-right {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.round-top {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+.round-bottom {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+/* BACKGROUNDS FOR ELEMENTS */
+.primary {
+    background-color: var(--primary);
+    color: var(--font-light);
+}
+
+.secondary {
+    background-color: var(--secondary);
+    color: var(--font-dark);
+}
+
+.terciary {
+    background-color: var(--terciary);
+    color: var(--font-dark);
+}
+
+.transparent {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.dark-font {
+    color: var(--font-dark);
+}
+
+/* HEIGHT AND WIDTH */
+.fill {
+    width: 100%;
+    height: 100%;
+}
+
+.fill-w {
+    width: 100%;
+}
+
+.fill-h {
+    height: 100%;
+}
+
+/* CARDS */
+.card-container {
+    width: 100%;
+    height: auto;
+    padding: var(--border-size);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+.card {
+    width: 100%;
+    margin-bottom: var(--border-size);
+}
+
+.card-action {
+    height: 3.375rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.card-action button {
+    height: 100%;
+    width: 3.5rem;
+    justify-content: flex-start;
+}
+
+.card-action .primary {
+    width: calc(100% - 3.5rem);
+}
+
+/* BUTTONS */
+.button {
+    min-height: 2.25rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: var(--border-radius);
+    padding-right: var(--border-radius);
+    border: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.button span {
+    height: 100%;
+}
+
+.button p {
+    height: 100%;
+}
+
+.button-icon p {
+    padding-left: 0.25rem;
+}
+
+.button-space {
+    letter-spacing: 0.25rem;
+    text-transform: uppercase;
+}
+
+/* FLOATING ACTION BUTTON */
+.fab {
+    position: absolute;
+    bottom: calc(1rem + 60px);
+    width: 3.5rem;
+    height: 3.5rem;
+    z-index: 200;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--secondary);
+    color: var(--font-dark);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.fab span {
+    width: 1.5rem;
+    height: 1.5rem;
 }
