@@ -1,0 +1,82 @@
+@font-face {
+    font-family: 'Monserrat Thin';
+    font-style: normal;
+    font-weight: 100;
+    src: local('Monserrat Thin'),
+        local('Monserrat Thin'),
+        url('./Montserrat-Thin.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Monserrat Light';
+    font-style: normal;
+    font-weight: 200;
+    src: local('Monserrat Light'),
+        local('Monserrat Light'),
+        url('./Montserrat-Light.ttf') format('truetype');
+    }
+    
+@font-face {
+    font-family: 'Monserrat Regular';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Monserrat Regular'),
+        local('Monserrat Regular'),
+        url('./Montserrat-Regular.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Monserrat Bold';
+    font-style: normal;
+    font-weight: 600;
+    src: url('./Montserrat-Bold.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Monserrat Black';
+    font-style: normal;
+    font-weight: 800;
+    src: url('./Montserrat-Black.ttf') format('truetype');
+  }
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./Roboto-Regular.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Roboto Thin';
+    font-style: normal;
+    font-weight: 100;
+    src: url('./Roboto-Thin.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Roboto Medium';
+    font-style: normal;
+    font-weight: 500;
+    src: url('./Roboto-Medium.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Roboto Light';
+    font-style: normal;
+    font-weight: 300;
+    src: url('./Roboto-Light.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Roboto Bold';
+    font-style: normal;
+    font-weight: 700;
+    src: url('./Roboto-Bold.ttf') format('truetype');
+    }
+
+@font-face {
+    font-family: 'Roboto Black';
+    font-style: normal;
+    font-weight: 700;
+    src: url('./Roboto-Black.ttf') format('truetype');
+    }

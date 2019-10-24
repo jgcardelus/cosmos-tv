@@ -1,0 +1,40 @@
+#home #header {
+    height: 30vh;
+    background-color: rgb(213, 42, 122);
+    position: relative;
+}
+
+#home #header h1 {
+    position: absolute;
+    bottom: 20%;
+    left: var(--padding-size);
+    margin: 0;
+}
+
+#home #info {
+    width: calc(100% 32px);
+    margin-left: var(--padding-size);
+    margin-right: var(--padding-size);
+    margin-top: var(--padding-size);
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+#home #info #episode-name {
+    width: 70%;
+}
+
+#home #info div h3 {
+    max-height: calc(1.25rem + 10px);
+    overflow-x: hidden;
+}
+
+#home #info #episode-information {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}

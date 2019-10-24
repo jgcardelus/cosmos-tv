@@ -10,8 +10,7 @@
 	width: 100vw;
 	min-height: calc(100vh - 60px);
 
-	overflow:scroll;
-	scroll-snap-type: y mandatory;
+	overflow:auto;
 }
 
 #app
@@ -25,7 +24,7 @@
 	align-content: flex-start;
 }
 
-#app div
+#app .pageTab
 {
 	width: 100vw;
 	min-height: calc(100vh - 60px);

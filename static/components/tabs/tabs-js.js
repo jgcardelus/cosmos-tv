@@ -19,13 +19,19 @@ let returnTimer;
 let touchStart = null;
 document.querySelector("#app-container").addEventListener('touchstart', function(e)
 {
-	touchStart = e.changedTouches[0].pageX;
+	if(allowPageChange)
+	{
+		touchStart = e.changedTouches[0].pageX;
+	}
 });
 
 document.querySelector("#app-container").addEventListener('touchmove', function(e)
 {
-	e.preventDefault();
-	handleTouchmove(e.changedTouches[0].pageX);
+	if(allowPageChange)
+	{
+		e.preventDefault();
+		handleTouchmove(e.changedTouches[0].pageX);
+	}
 });
 
 function handleTouchmove(yPos)
@@ -52,7 +58,7 @@ function handleTouchmove(yPos)
 				}
 			}
 		}
-	}	
+	}
 }
 
 //DESKTOP SCROLLING BEHAVIOUR
@@ -67,7 +73,7 @@ $("#app-container").scroll(function()
 		if (deltaScroll != 0)
 		{
 			let absDeltaScroll = Math.abs(deltaScroll);
-			
+
 			returnTimer = setTimeout(function()
 			{
 				if(absDeltaScroll <= (changeThreshold * windowWidth))
@@ -76,7 +82,7 @@ $("#app-container").scroll(function()
 					pages.bounce(actualPage);
 				}
 			}, 100);
-			
+
 			if (absDeltaScroll > (changeThreshold * windowWidth))
 			{
 				scrolledX = updatedSrollLeft;
