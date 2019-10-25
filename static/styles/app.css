@@ -1,7 +1,9 @@
 :root {
     --border-size: 1rem;
+    --border-top-size: 0.5rem;
     --section-size: 2rem;
     --border-radius: 15px;
+    --card-element-height: 3.375rem;
     --primary: #314DF9;
     --secondary: #FF016C;
     --terciary: #FFEB3B;
@@ -23,6 +25,11 @@ body {
     min-height: 100vh;
     background-color: var(--primary-bg);
     overflow-x: hidden;
+}
+
+.end {
+    width: 100%;
+    height: 4.125rem;
 }
 
 /* SECTION HEADER */
@@ -142,7 +149,7 @@ p {
 }
 
 .card-action {
-    height: 3.375rem;
+    height: var(--card-element-height);
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -152,11 +159,60 @@ p {
 
 .card-action button {
     height: 100%;
+    width: 100%;
+}
+
+.section-container {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.section-card {
+    background-color: var(--secondary-bg);
+    color: var(--font-dark);
+}
+
+.section-card .section-header {
+    width: calc(100% - var(--border-size));
+    height: var(--card-element-height);
+    margin-top: var(--border-top-size);
+    padding-left: var(--border-size);
+    display: flex;
+    align-items: center;
+}
+
+.section-card .section-action {
+    min-height: var(--card-element-height);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-card .section-action .button {
+    height: 2.25rem;
+}
+
+.section-card .section-action .fill {
+    height: var(--card-element-height);
+    justify-content: space-between;
+}
+
+.section-margin {
+    min-height: calc(var(--card-element-height) - var(--border-size));
+    margin-left: var(--border-size);
+    margin-right: var(--border-size);
+    margin-bottom: var(--border-top-size);
+}
+
+.side-button button {
+    height: 100%;
     width: 3.5rem;
     justify-content: flex-start;
 }
 
-.card-action .primary {
+.side-button .primary {
     width: calc(100% - 3.5rem);
 }
 
@@ -185,6 +241,7 @@ p {
 }
 
 .button-icon p {
+    min-width: 70%;
     padding-left: 0.25rem;
 }
 
@@ -193,10 +250,37 @@ p {
     text-transform: uppercase;
 }
 
+/* ROUND BUTTON */
+.round-button {
+    border-radius: 50%;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.round-button span {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.round-button-big {
+    height: var(--card-element-height);
+    width: var(--card-element-height);
+}
+
+.round-button-small {
+    height: 2.25rem;
+    width: 2.25rem;
+}
+
 /* FLOATING ACTION BUTTON */
 .fab {
-    position: absolute;
-    bottom: calc(1rem + 60px);
+    position: fixed;
+    top: calc(100vh - 8rem);
+    right: 1rem;
     width: 3.5rem;
     height: 3.5rem;
     z-index: 200;
@@ -209,9 +293,24 @@ p {
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+    transition-duration: 0.75s;
+    -ms-transition-duration: 0.75s;
+    -webkit-transition-duration: 0.75s;
 }
 
 .fab span {
+    display: block;
     width: 1.5rem;
     height: 1.5rem;
+    transition-duration: 0.75s;
+    -ms-transition-duration: 0.75s;
+    -webkit-transition-duration: 0.75s;
+}
+
+/* KEEP AT THE BOTTOM */
+.hidden {
+    display: none;
+    transition-duration: 0.75s;
+    -ms-transition-duration: 0.75s;
+    -webkit-transition-duration: 0.75s;
 }

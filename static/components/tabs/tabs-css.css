@@ -1,24 +1,24 @@
 .tabs-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 0;
-    margin: 0;
-    width: 100vw;
-    min-height: 100vh;
-    overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
 .tabs {
-    display: flex;
-    overflow: hidden;
-    height: 100vh;
-    margin-top: 0px;
-    padding-top: 0px;
-    position: relative;
-    width: 100%;
-    backface-visibility: hidden;
-    will-change: overflow;
+  display: flex;
+  overflow: hidden;
+  height: 100vh;
+  margin-top: 0px;
+  padding-top: 0px;
+  position: relative;
+  width: 100%;
+  backface-visibility: hidden;
+  will-change: overflow;
 }
 
 /*
@@ -32,38 +32,37 @@
 }
 */
 .tabs .tab {
-    max-width: 100vw;
-    height: auto;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: none;
-    position: relative;
+  max-width: 100vw;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  position: relative;
 }
 
 .navbar {
-    width: 100vw;
-    height: 60px;
-    position: fixed;
-    bottom: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-content: center;
-    z-index: 200;
-    background-color: rgb(255, 255, 255);
+  width: 100vw;
+  height: 60px;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  z-index: 200;
+  background-color: rgb(255, 255, 255);
 }
 
 .navbar-btn {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
 }
 
 .navbar-btn .button {
-    height: 100%;
-    width: 100%;
-    border-radius: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
 }

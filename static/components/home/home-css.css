@@ -1,0 +1,24 @@
+#main-controls button span {
+    font-family: 2.625rem;
+}
+
+#time-control p {
+    max-width: 35%;
+    overflow-x: hidden;
+}
+
+#time-control div {
+    width: 65%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#time-control div button {
+    margin-left: calc(var(--border-size) / 2);
+}
+
+#time-control div .button {
+    width: calc(60%);
+}
