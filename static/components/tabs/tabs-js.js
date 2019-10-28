@@ -27,14 +27,14 @@ class TabButton {
     }
 
     activate() {
-        if (!$(this.elem).hasClass('activeTab')) {
-            $(this.elem).addClass('activeTab');
+        if (!$(this.elem).hasClass('active-tab')) {
+            $(this.elem).addClass('active-tab');
         }
     }
 
     deactivate() {
-        if ($(this.elem).hasClass('activeTab')) {
-            $(this.elem).removeClass('activeTab');
+        if ($(this.elem).hasClass('active-tab')) {
+            $(this.elem).removeClass('active-tab');
         }
     }
 }
@@ -53,9 +53,7 @@ class TabPage {
         let selector = $(this.tabsContainer + ' .tabs .tab#' + this.id);
         let scrollPosition = selector.scrollTop();
         scrollPosition += yDirection;
-        selector.animate({
-            scrollTop: scrollPosition
-        }, 2.5);
+        selector.scrollTop(scrollPosition);
     }
 
     relocateFab() {
@@ -77,6 +75,8 @@ class TabPage {
         }, time, function() {
             parent.scrolledX = $(tabsContainer).scrollLeft();
             parent.ignoreScrolling = false;
+            parent.actualTab = n;
+            parent.trigger('page-change');
         });
 
 
@@ -94,6 +94,8 @@ class TabPage {
         $(this.tabsContainer).scrollLeft((this.n * windowWidth));
         parent.scrolledX = $(this.tabsContainer).scrollLeft();
         parent.ignoreScrolling = false;
+        parent.actualTab = this.n;
+        parent.trigger('page-change');
 
         if (this.xpos != this.n * windowWidth) {
             this.xpos = this.n * windowWidth;
@@ -121,6 +123,9 @@ class Tabs {
         this.scrolledX = 0;
         this.xPosStart = null;
         this.yPosStart = null;
+
+        //EVENTS
+        this.triggers = {};
     }
 
     create() {
@@ -290,14 +295,20 @@ class Tabs {
 
 
     change(n) {
-        for (let i = 0; i < this.tabs.length; i++) {
-            this.tabs[i].tabButton.deactivate();
+        if (this.navbarId != null)
+        {
+            for (let i = 0; i < this.tabs.length; i++) {
+                this.tabs[i].tabButton.deactivate();
+            }
         }
 
         let tab = this.tabs[n];
         this.activateFab(n);
         tab.tabPage.change(this);
-        tab.tabButton.activate();
+        if (this.navbarId != null)
+        {
+            tab.tabButton.activate();
+        }
     }
 
     bounce(n) {
@@ -306,13 +317,44 @@ class Tabs {
     }
 
     go(n) {
-        for (let i = 0; i < this.tabs.length; i++) {
-            this.tabs[i].tabButton.deactivate();
+        if (this.navbarId != null)
+        {
+            for (let i = 0; i < this.tabs.length; i++) {
+                this.tabs[i].tabButton.deactivate();
+            }
         }
 
         let tab = this.tabs[n];
         this.activateFab(n);
         tab.tabPage.go(this);
-        tab.tabButton.activate();
+        if (this.navbarId != null)
+        {
+            tab.tabButton.activate();
+        }
+    }
+
+    on(event, callback)
+    {
+        if (!this.triggers[event])
+        {
+            //Every event contains a list of actions that should be
+            //called when it is triggered
+            this.triggers[event] = [];
+        }
+
+        //Add the event that must be triggered
+        this.triggers[event].push(callback);
+    }
+
+    trigger(event, params)
+    {
+        if(this.triggers[event])
+        {
+            for (let i = 0; i < this.triggers[event].length; i++)
+            {
+                //Execute every callback in the event
+                this.triggers[event][i](params);
+            }
+        }
     }
 }

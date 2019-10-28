@@ -1,0 +1,11 @@
+#mouse-control canvas {
+    height: 13.5rem;
+}
+
+#mouse-control .section-action button {
+    justify-content: center;
+}
+
+#keyboard-control div input[type=text] {
+    width: calc(100% - 3.5rem * 2);
+}

@@ -20,19 +20,16 @@
 </head>
 
 <body>
+	{{scan}}
 	<div id="app" class="tabs-container">
 		<div class="tabs">
-			<div class="tab" id="control-pad">
-				<h1 class="header">Control Pad</h1>
-				<button class="round-button round-button-big">
-					<span class="icons">replay</span>
-				</button>
-			</div>
+			{{control-pad}}
 			{{home}}
 			{{movies}}
 		</div>
 	</div>
-
+	<div id="notification-container" class="transparent">
+	</div>
 	{{navbar}}
 </body>
 {{tabs}}

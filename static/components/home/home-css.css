@@ -2,23 +2,41 @@
     font-family: 2.625rem;
 }
 
-#time-control p {
-    max-width: 35%;
-    overflow-x: hidden;
-}
-
 #time-control div {
-    width: 65%;
+    display: -webkit-box;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-flow: row;
+    -webkit-box-align: center;
     align-items: center;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
 }
 
 #time-control div button {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-flow: row;
+    -webkit-box-align: center;
+    align-items: center;
     margin-left: calc(var(--border-size) / 2);
 }
 
-#time-control div .button {
-    width: calc(60%);
+#skip button {
+    margin-left: calc(var(--border-size) / 2);
+}
+
+#skip {
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+}
+
+.slider {
+    width: 50%;
+    height: calc(2.25rem / 2);
+    outline: none;
+    background: var(--font-dark);
 }

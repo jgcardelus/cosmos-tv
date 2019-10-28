@@ -1,6 +1,6 @@
 <div class="tab" id="home">
-    <button type="button" class="fab">
-        <span class="icons">search</span>
+    <button type="button" class="fab" id="scan-fab">
+        <span class="icons">track_changes</span>
     </button>
     <h1 class="header">Binging now</h1>
     <div class="card-container">
@@ -24,17 +24,19 @@
             <div class="section-action section-margin" id="time-control">
                 <p>12:00 / 50:00</p>
                 <div>
-                    <button class="round-button round-button-small">
+                    <button class="round-button round-button-big">
                         <span class="icons">replay_10</span>
                     </button>
-                    <button class="round-button round-button-small">
+                    <button class="round-button round-button-big">
                         <span class="icons">forward_10</span>
                     </button>
-                    <button class="button button-icon button-space round primary">
-                        <span class="icons">skip_next</span>
-                        <p>Skip</p>
-                    </button>
                 </div>
+            </div>
+            <div class="section-action section-margin" id="skip">
+                <button class="button button-icon button-space round primary">
+                    <span class="icons">skip_next</span>
+                    <p>Skip</p>
+                </button>
             </div>
         </div>
         <div class="card section-card round">
@@ -42,7 +44,7 @@
                 <h2>Volume</h2>
             </div>
             <div class="section-action section-margin" id="volume-control">
-                <input type="range">
+                <input type="range" class="slider">
                 <button class="button button-icon button-space round primary">
                     <span class="icons">volume_off</span>
                     <p>Mute</p>
