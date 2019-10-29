@@ -24,6 +24,8 @@ WebSocket transport not available. Install eventlet or gevent and gevent-websock
  * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
 ```
 
+Although the page will show, the features don't work yet. Only the GUI has been devolped.
+
 ## Requisits
 - Python3
 - Python packages
