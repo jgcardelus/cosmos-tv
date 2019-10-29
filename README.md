@@ -4,6 +4,26 @@ System that allows you to control netflix, amazon prime, youtube, and other medi
 ## Development stage
 The server has been created and we are working now on the HTML page which will display on the phone.
 
+## How to use
+Open a terminal in CosmosTv's directory and type
+```
+python3 run.py
+```
+This will "compile" the page and start the server. Once the server has started it will display the web direction in a line similar to this:
+```
+Server started at ip: http://192.168.x.xx:8080
+```
+which will be located before the following: 
+```
+WebSocket transport not available. Install eventlet or gevent and gevent-websocket for improved performance.
+ * Serving Flask app "cosmostv" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+```
+
 ## Requisits
 - Python3
 - Python packages
