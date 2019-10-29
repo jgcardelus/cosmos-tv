@@ -111,7 +111,7 @@ class TabPage {
 class Tabs {
     constructor(initialTab, containerId, navbarId = null) {
         this.tabs = [];
-        this.tabsContainer = '.tabs-container' + containerId;
+        this.tabsSelector = '.tabs-container' + containerId;
         this.actualTab = initialTab;
         this.containerId = containerId;
         this.navbarId = navbarId;
@@ -146,7 +146,7 @@ class Tabs {
             if (this.navbarId != null) {
                 tabButton = new TabButton(i, tabId, tabButtons[i]);
             }
-            let tabPage = new TabPage(i, tabId, this.tabsContainer);
+            let tabPage = new TabPage(i, tabId, this.tabsSelector);
 
             let tab = new Tab(i, tabPage, tabButton);
             this.add(tab);
@@ -159,7 +159,7 @@ class Tabs {
     changeTabsHeight() {
         let navbarHeight = $('.navbar' + this.navbarId).css('height');
         let minHeight = 'calc(100vh - ' + navbarHeight + ')';
-        $(this.tabsContainer).css('min-height', minHeight);
+        $(this.tabsSelector).css('min-height', minHeight);
     }
 
     addPageBehaviour() {
@@ -171,19 +171,19 @@ class Tabs {
         }
 
         //DESKTOP SCROLLING BEHAVIOUR
-        $(this.tabsContainer).scroll(elem => {
+        $(this.tabsSelector).scroll(elem => {
             this.handleScroll(elem)
         });
 
         //SWIPING SCROLLING BEHAVIOUR
-        document.querySelector(this.tabsContainer).addEventListener('touchstart', elem => {
+        document.querySelector(this.tabsSelector).addEventListener('touchstart', elem => {
             if (this.allowPageChange) {
                 this.xPosStart = elem.changedTouches[0].pageX;
                 this.yPosStart = elem.changedTouches[0].pageY;
             }
         });
 
-        document.querySelector(this.tabsContainer).addEventListener('touchmove', elem => {
+        document.querySelector(this.tabsSelector).addEventListener('touchmove', elem => {
             if (this.allowPageChange) {
                 elem.preventDefault();
                 this.handleSwipe(elem)
@@ -218,7 +218,7 @@ class Tabs {
     handleScroll(element) {
         clearTimeout(this.returnTimer);
         if (!this.ignoreScrolling) {
-            let updatedSrollLeft = $(this.tabsContainer).scrollLeft();
+            let updatedSrollLeft = $(this.tabsSelector).scrollLeft();
             let deltaScroll = updatedSrollLeft - this.scrolledX;
 
             //The user has moved
@@ -273,21 +273,20 @@ class Tabs {
     }
 
     activateFab(n) {
-        let fabs = $(this.tabsContainer + ' .tabs .tab .fab');
         for (let i = 0; i < this.tabs.length; i++) {
-            let selector = $(this.tabsContainer + ' .tabs .tab#' + this.tabs[i].tabPage.id + ' .fab');
+            let selector = $(this.tabsSelector + ' .tabs .tab#' + this.tabs[i].tabPage.id + ' .fab');
             if (selector != null) {
-                let selectorSpan = $(this.tabsContainer + ' .tabs .tab#' + this.tabs[i].tabPage.id + ' .fab span');
+                let selectorSpan = $(this.tabsSelector + ' .tabs .tab#' + this.tabs[i].tabPage.id + ' .fab span');
                 if (!selector.hasClass('hidden')) {
                     selector.addClass('hidden');
                     selectorSpan.addClass('hidden');
                 }
             }
         }
-        let fab = $(this.tabsContainer + ' .tabs .tab#' + this.tabs[n].tabPage.id + ' .fab');
+        let fab = $(this.tabsSelector + ' .tabs .tab#' + this.tabs[n].tabPage.id + ' .fab');
         //Tab may not have fab
         if (fab != null) {
-            let fabSpan = $(this.tabsContainer + ' .tabs .tab#' + this.tabs[n].tabPage.id + ' .fab span');
+            let fabSpan = $(this.tabsSelector + ' .tabs .tab#' + this.tabs[n].tabPage.id + ' .fab span');
             fab.removeClass('hidden');
             fabSpan.removeClass('hidden');
         }

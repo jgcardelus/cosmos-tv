@@ -1,64 +1,53 @@
 //DEFINING PAGE
-let scanTabs = new Tabs(0, '#scan');
+let scanTabs = new Tabs(0, "#scan");
 scanTabs.create();
 tabs.push(scanTabs);
 
 //PAGE ACTIVATION AND DEACTIVATION
-function activateScan()
-{
-    for (let i = 0; i < tabs.length; i++)
-    {
-        let tab = tabs[i];
-        if (tab != scanTabs)
-        {
-            tab.allowPageChange = false;
-        }
-    }
-    scanTabs.allowPageChange = true;
-    $('#scan').css('z-index', '500');
-    $('#scan tabs').css('z-index', '500');
-    if ($('#scan').hasClass('hidden'))
-    {
-        $('#scan').removeClass('hidden');
-    }
-    scanTabs.change(1);
+function activateScan() {
+	for (let i = 0; i < tabs.length; i++) {
+		let tab = tabs[i];
+		if (tab != scanTabs) {
+			tab.allowPageChange = false;
+		}
+	}
+	scanTabs.allowPageChange = true;
+	$("#scan").css("z-index", "500");
+	$("#scan tabs").css("z-index", "500");
+	if ($("#scan").hasClass("hidden")) {
+		$("#scan").removeClass("hidden");
+	}
+	scanTabs.change(1);
 }
 
-function deactivateScan()
-{
-    $('#scan').css('z-index', '0');
-    $('#scan tabs').css('z-index', '0');
-    for (let i = 0; i < tabs.length; i++)
-    {
-        let tab = tabs[i];
-        tab.allowPageChange = false;
-    }
-    appTabs.allowPageChange = true;
-    if (!$('#scan').hasClass('hidden'))
-    {
-        $('#scan').addClass('hidden');
-    }
+function deactivateScan() {
+	$("#scan").css("z-index", "0");
+	$("#scan tabs").css("z-index", "0");
+	for (let i = 0; i < tabs.length; i++) {
+		let tab = tabs[i];
+		tab.allowPageChange = false;
+	}
+	appTabs.allowPageChange = true;
+	if (!$("#scan").hasClass("hidden")) {
+		$("#scan").addClass("hidden");
+	}
 }
 
 let hasChanged = false;
-scanTabs.on('page-change', () => {
-    if (scanTabs.actualTab == 0)
-    {
-        if (hasChanged)
-        {
-            deactivateScan();
-            hasChanged = false;
-        }
-    }
-    else if(scanTabs.actualTab == 1)
-    {
-        hasChanged = true;
-    }
+scanTabs.on("page-change", () => {
+	if (scanTabs.actualTab == 0) {
+		if (hasChanged) {
+			deactivateScan();
+			hasChanged = false;
+		}
+	} else if (scanTabs.actualTab == 1) {
+		hasChanged = true;
+	}
 });
 
-$('#close-span').on('click', () =>{
-    scanTabs.change(0);
-})
+$("#close-span").on("click", () => {
+	scanTabs.change(0);
+});
 
 // PAGE BEHAVIOUR
 let jsonExample = `
@@ -118,309 +107,310 @@ let jsonExample = `
             "seasons":[]
         }]
     }
-`
-
-let a = JSON.parse(jsonExample);
+`;
 
 class ExpandableElement {
-    constructor(id, children) {
-        this.id = id;
-        this.children = children;
-        this.expanded = true;
+	constructor(id, children) {
+		this.id = id;
+		this.children = children;
+		this.expanded = true;
 
-        this.expandIcon = "expand_more";
-        this.contractIcon = "expand_less";
+		this.expandIcon = "expand_more";
+		this.contractIcon = "expand_less";
 
-        this.animationTime = 300;
-    }
+		this.animationTime = 300;
+	}
 
-    create()
-    {
-        this.addEventListeners();
-        this.contractFast();
-    }
+	create() {
+		this.addEventListeners();
+		this.contractFast();
+	}
 
-    addEventListeners()
-    {
-        let selector = '#' + this.id + ' #exp-' + this.id;
-        $(selector).on('click', e =>
-        {
-            this.expanderHandler();
-        });
-    }
+	addEventListeners() {
+		let selector = "#" + this.id + " #exp-" + this.id;
+		$(selector).on("click", e => {
+			this.expanderHandler();
+		});
+	}
 
-    expanderHandler()
-    {
-        if(this.expanded) {
-            this.contract();
-        }
-        else {
-            this.expand();
-        }
-    }
+	expanderHandler() {
+		if (this.expanded) {
+			this.contract();
+		} else {
+			this.expand();
+		}
+	}
 
-    contractFast()
-    {
-        $('#' + this.id + ' .' + this.children).slideUp(0, e =>
-        {
-            this.expanded = false;
-        });
-    }
+	contractFast() {
+		$("#" + this.id + " ." + this.children).slideUp(0, e => {
+			this.expanded = false;
+		});
+	}
 
-    contract()
-    {
-        $('#' + this.id + ' .' + this.children).slideUp(this.animationTime, e =>
-        {
-            this.expanded = false;
-        });
+	contract() {
+		$("#" + this.id + " ." + this.children).slideUp(
+			this.animationTime,
+			e => {
+				this.expanded = false;
+			}
+		);
 
-        let spanSelector = '#exp-' + this.id + ' span';
-        $(spanSelector).slideUp(this.animationTime / 2,
-        e => {
-            $(spanSelector).html(this.expandIcon);
-            $(spanSelector).slideDown(this.animationTime / 2);
-        });
-    }
+		let spanSelector = "#exp-" + this.id + " span";
+		$(spanSelector).slideUp(this.animationTime / 2, e => {
+			$(spanSelector).html(this.expandIcon);
+			$(spanSelector).slideDown(this.animationTime / 2);
+		});
+	}
 
-    expand()
-    {
-        $('#' + this.id + ' .' + this.children).slideDown(this.animationTime, e =>
-        {
-            this.expanded = true;
-        });
+	expand() {
+		$("#" + this.id + " ." + this.children).slideDown(
+			this.animationTime,
+			e => {
+				this.expanded = true;
+			}
+		);
 
-        let spanSelector = '#exp-' + this.id + ' span';
-        $(spanSelector).slideUp(this.animationTime / 2,
-        e => {
-            $(spanSelector).html(this.contractIcon);
-            $(spanSelector).slideDown(this.animationTime / 2);
-        });
-    }
+		let spanSelector = "#exp-" + this.id + " span";
+		$(spanSelector).slideUp(this.animationTime / 2, e => {
+			$(spanSelector).html(this.contractIcon);
+			$(spanSelector).slideDown(this.animationTime / 2);
+		});
+	}
 }
 
 class URLElement {
-    constructor(id, url) {
-        this.id = id;
-        this.url = url;
-    }
+	constructor(id, url) {
+		this.id = id;
+		this.url = url;
+	}
 
-    create()
-    {
-        this.addEventListeners();
-    }
+	create() {
+		this.addEventListeners();
+	}
 
-    addEventListeners()
-    {
-        $('#' + this.id).on('click', e =>
-        {
-            this.handleURL();
-        });
-    }
+	addEventListeners() {
+		$("#" + this.id).on("click", e => {
+			this.handleURL();
+		});
+	}
 
-    handleURL()
-    {
-        console.log(this.url);
-    }
+	handleURL() {
+		console.log(this.url);
+	}
 }
 
-class Expandable{
-    constructor(id)
-    {
-        this.id = id;
-        this.selector = '.card-container#' + id;
-        this.dataset = null;
-        this.parsedHTML = '';
+class Expandable {
+	constructor(id) {
+		this.id = id;
+		this.selector = ".card-container#" + id;
+		this.dataset = null;
+		this.parsedHTML = "";
 
-        this.expandableElements = [];
-        this.URLElements = [];
-    }
+		this.expandableElements = [];
+		this.urlELements = [];
+	}
 
-    create(raw_dataset)
-    {
-        let dataset = JSON.parse(raw_dataset);
-        this.dataset = dataset;
-        this.parsedHTML = '';
+	create(raw_dataset) {
+		let dataset = JSON.parse(raw_dataset);
+		this.dataset = dataset;
+		this.parsedHTML = "";
 
-        //Unbind events
-        $(this.selector).unbind();
-        //Clear html
-        $(this.selector).html('');
-        for (let show of dataset[this.id])
-        {
-            if (show["seasons"].length == 0)
-            {
-                this.injectShow(show);
-            }
-            else
-            {
-                this.injectExpandableShow(show);
-            }
-        }
+		//Unbind events
+		$(this.selector).unbind();
+		//Clear html
+		$(this.selector).html("");
+		for (let show of dataset[this.id]) {
+			if (show["seasons"].length == 0) {
+				this.injectShow(show);
+			} else {
+				this.injectExpandableShow(show);
+			}
+		}
 
-        this.createURLs();
-        this.createExpandables();
-        this.loadMDC();
-    }
+		this.createUrls();
+		this.createExpandables();
+		this.loadMDC();
+	}
 
-    createURLs()
-    {
-        for (let element of this.URLElements)
-        {
-            element.create();
-        }
-    }
+	createUrls() {
+		for (let element of this.urlELements) {
+			element.create();
+		}
+	}
 
-    createExpandables()
-    {
-        for (let element of this.expandableElements)
-        {
-            element.create();
-        }
-    }
+	createExpandables() {
+		for (let element of this.expandableElements) {
+			element.create();
+		}
+	}
 
-    loadMDC()
-    {
-        let selectorPrefix = '#' + this.id;
-        $(selectorPrefix + ' .button').addClass('mdc-ripple-surface');
-        $(selectorPrefix + ' .button').attr('data-mdc-auto-init', 'MDCRipple');
+	loadMDC() {
+		let selectorPrefix = "#" + this.id;
+		$(selectorPrefix + " .button").addClass("mdc-ripple-surface");
+		$(selectorPrefix + " .button").attr("data-mdc-auto-init", "MDCRipple");
 
-        $(selectorPrefix + ' .round-button').addClass('mdc-ripple-surface');
-        $(selectorPrefix + ' .round-button').attr('data-mdc-auto-init', 'MDCRipple');
+		$(selectorPrefix + " .round-button").addClass("mdc-ripple-surface");
+		$(selectorPrefix + " .round-button").attr(
+			"data-mdc-auto-init",
+			"MDCRipple"
+		);
 
-        $(selectorPrefix + ' .fab').addClass('mdc-ripple-surface');
-        $(selectorPrefix + ' .fab').attr('data-mdc-auto-init', 'MDCRipple');
+		$(selectorPrefix + " .fab").addClass("mdc-ripple-surface");
+		$(selectorPrefix + " .fab").attr("data-mdc-auto-init", "MDCRipple");
 
-        $(selectorPrefix + ' .card').addClass('mdc-elevation--z4');
+		$(selectorPrefix + " .card").addClass("mdc-elevation--z4");
 
-        $(selectorPrefix + ' .mdc-icon-button').attr('data-mdc-auto-init', 'MDCRipple');
-        $(selectorPrefix + ' .mdc-fab').attr('data-mdc-auto-init', 'MDCRipple');
+		$(selectorPrefix + " .mdc-icon-button").attr(
+			"data-mdc-auto-init",
+			"MDCRipple"
+		);
+		$(selectorPrefix + " .mdc-fab").attr("data-mdc-auto-init", "MDCRipple");
 
-        mdc.autoInit();
-    }
+		mdc.autoInit();
+	}
 
-    injectShow(dataset)
-    {
-        let name = dataset["name"];
-        let id = dataset["id"];
+	injectShow(dataset) {
+		let name = dataset["name"];
+		let id = dataset["id"];
 
-        //URL Element
-        let urlElement = new URLElement('url-' + id, dataset["url"]);
-        this.URLElements.push(urlElement);
+		//URL Element
+		let urlElement = new URLElement("url-" + id, dataset["url"]);
+		this.urlELements.push(urlElement);
 
-        let component = this.createShow(name, id);
-        $(this.selector).append(component);
-    }
+		let component = this.createShow(name, id);
+		$(this.selector).append(component);
+	}
 
-    injectExpandableShow(dataset)
-    {
-        let name = dataset["name"];
-        let id = dataset["id"];
+	injectExpandableShow(dataset) {
+		let name = dataset["name"];
+		let id = dataset["id"];
 
-        //URL Element
-        let urlElement = new URLElement('url-' + id, dataset["url"]);
-        this.URLElements.push(urlElement);
+		//URL Element
+		let urlElement = new URLElement("url-" + id, dataset["url"]);
+		this.urlELements.push(urlElement);
 
-        let component = this.createExpandableShow(name, id);
-        $(this.selector).append(component);
+		let component = this.createExpandableShow(name, id);
+		$(this.selector).append(component);
 
-        this.injectSeason(dataset["seasons"], id);
-    }
+		this.injectSeason(dataset["seasons"], id);
+	}
 
-    injectSeason(dataset, containerId)
-    {
-        for (let i = 0; i < dataset.length; i++)
-        {
-            let season = dataset[i];
+	injectSeason(dataset, containerId) {
+		for (let i = 0; i < dataset.length; i++) {
+			let season = dataset[i];
 
-            let name = season["name"];
-            let id = season["id"];
-            let component = this.createSeason(name, id);
-            $('#' + containerId).append(component);
+			let name = season["name"];
+			let id = season["id"];
+			let component = this.createSeason(name, id);
+			$("#" + containerId).append(component);
 
-            if ((i + 1) == dataset.length)
-            {
-                $('#' + id).css('margin-bottom', 'var(--border-size)');
-            }
+			if (i + 1 == dataset.length) {
+				$("#" + id).css("margin-bottom", "var(--border-size)");
+			}
 
-            this.injectEpisode(season["episodes"], id);
-        }
-    }
+			this.injectEpisode(season["episodes"], id);
+		}
+	}
 
-    injectEpisode(dataset, containerId)
-    {
-        for (let episode of dataset)
-        {
-            let name = episode["name"];
-            let id = episode["id"];
+	injectEpisode(dataset, containerId) {
+		for (let episode of dataset) {
+			let name = episode["name"];
+			let id = episode["id"];
 
-            //URL Element
-            let urlElement = new URLElement('url-' + id, episode["url"]);
-            this.URLElements.push(urlElement);
+			//URL Element
+			let urlElement = new URLElement("url-" + id, episode["url"]);
+			this.urlELements.push(urlElement);
 
-            let component = this.createEpisode(name, id);
-            $('#' + containerId + ' .expandee').append(component);
-        }
-    }
+			let component = this.createEpisode(name, id);
+			$("#" + containerId + " .expandee").append(component);
+		}
+	}
 
-    createShow(name, id)
-    {
-        let component = `
-        <div class="card card-action round"  id="`+ id +`">
-            <button class="button primary round-left" id="url-`+ id +`">
-                <h2>`+ name +`</h2>
+	createShow(name, id) {
+		let component =
+			`
+        <div class="card card-action round"  id="` +
+			id +
+			`">
+            <button class="button primary round-left" id="url-` +
+			id +
+			`">
+                <h2>` +
+			name +
+			`</h2>
             </button>
         </div>`;
-        return component;
-    }
+		return component;
+	}
 
-    createExpandableShow(name, id)
-    {
-        let component = `
-        <div class="expandable-card" id="`+ id +`">
+	createExpandableShow(name, id) {
+		let component =
+			`
+        <div class="expandable-card" id="` +
+			id +
+			`">
             <div class="card card-action side-button round">
-                <button class="button primary round-left" id="url-`+ id +`">
-                    <h2>`+ name +`</h2>
+                <button class="button primary round-left" id="url-` +
+			id +
+			`">
+                    <h2>` +
+			name +
+			`</h2>
                 </button>
-                <button class="button secondary round-right" id="exp-` + id +`">
+                <button class="button secondary round-right" id="exp-` +
+			id +
+			`">
                     <span class="icons">expand_more</span>
                 </button>
             </div>
         </div>`;
 
-        let expandableElement = new ExpandableElement(id, 'expandable');
-        this.expandableElements.push(expandableElement);
-        return component;
-    }
+		let expandableElement = new ExpandableElement(id, "expandable");
+		this.expandableElements.push(expandableElement);
+		return component;
+	}
 
-    createSeason(name, id)
-    {
-        let component = `
-        <div class="expandable section-card" id="`+ id +`">
+	createSeason(name, id) {
+		let component =
+			`
+        <div class="expandable section-card" id="` +
+			id +
+			`">
             <div class="section-header side-button">
-                <button class="button transparent expander" id="exp-` + id +`">
-                    <h2>`+name+`</h2>
+                <button class="button transparent expander" id="exp-` +
+			id +
+			`">
+                    <h2>` +
+			name +
+			`</h2>
                     <span class="icons">expand_more</span>
                 </button>
             </div>
             <div class="expandee"></div>
         </div>`;
-        let expandableElement = new ExpandableElement(id, 'expandee');
-        this.expandableElements.push(expandableElement);
-        return component;
-    }
+		let expandableElement = new ExpandableElement(id, "expandee");
+		this.expandableElements.push(expandableElement);
+		return component;
+	}
 
-    createEpisode(name, id)
-    {
-        let component = `
-        <div class="section-action" id="`+ id +`">
-            <button class="button primary fill" id="url-`+ id +`">
-                <h2>`+name+`</h2>
+	createEpisode(name, id) {
+		let component =
+			`
+        <div class="section-action" id="` +
+			id +
+			`">
+            <button class="button primary fill" id="url-` +
+			id +
+			`">
+                <h2>` +
+			name +
+			`</h2>
             </button>
         </div>`;
 
-        return component;
-    }
+		return component;
+	}
 }
 
-let expandable = new Expandable('scan-result');
+let expandable = new Expandable("scan-result");
 expandable.create(jsonExample);
