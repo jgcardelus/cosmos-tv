@@ -66,9 +66,4 @@ def start():
     connection_url = 'http://' + get_ip() + ':' + str(port)
     print("Server started at ip: %s" % (connection_url))
 
-    if config.DEBUG:
-        pass
-        #print("Launching chrome")
-        #os.popen("google-chrome " + connection_url)
-
     server.run(web, host='0.0.0.0', port=port)

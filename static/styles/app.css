@@ -423,7 +423,6 @@ p {
 
 .expandable-card {
     width: 100%;
-    margin-bottom: var(--border-size);
     display: -webkit-box;
     display: flex;
     -webkit-box-orient: vertical;
@@ -435,6 +434,7 @@ p {
     width: 100%;
     height: var(--card-element-height);
     margin-top: 0;
+    padding-left: 0;
     display: -webkit-box;
     display: flex;
     -webkit-box-align: center;
@@ -447,10 +447,6 @@ p {
     width: 100%;
     height: var(--card-element-height);
     justify-content: space-between;
-}
-
-.expandable .section-header .button h2 {
-    padding-left: var(--border-size);
 }
 
 .expandable-card div {

@@ -122,6 +122,107 @@ let jsonExample = `
 
 let a = JSON.parse(jsonExample);
 
+class ExpandableElement {
+    constructor(id, children) {
+        this.id = id;
+        this.children = children;
+        this.expanded = true;
+
+        this.expandIcon = "expand_more";
+        this.contractIcon = "expand_less";
+
+        this.animationTime = 300;
+    }
+
+    create()
+    {
+        this.addEventListeners();
+        this.contractFast();
+    }
+
+    addEventListeners()
+    {
+        let selector = '#' + this.id + ' #exp-' + this.id;
+        $(selector).on('click', e =>
+        {
+            this.expanderHandler();
+        });
+    }
+
+    expanderHandler()
+    {
+        if(this.expanded) {
+            this.contract();
+        }
+        else {
+            this.expand();
+        }
+    }
+
+    contractFast()
+    {
+        $('#' + this.id + ' .' + this.children).slideUp(0, e =>
+        {
+            this.expanded = false;
+        });
+    }
+
+    contract()
+    {
+        $('#' + this.id + ' .' + this.children).slideUp(this.animationTime, e =>
+        {
+            this.expanded = false;
+        });
+
+        let spanSelector = '#exp-' + this.id + ' span';
+        $(spanSelector).slideUp(this.animationTime / 2,
+        e => {
+            $(spanSelector).html(this.expandIcon);
+            $(spanSelector).slideDown(this.animationTime / 2);
+        });
+    }
+
+    expand()
+    {
+        $('#' + this.id + ' .' + this.children).slideDown(this.animationTime, e =>
+        {
+            this.expanded = true;
+        });
+
+        let spanSelector = '#exp-' + this.id + ' span';
+        $(spanSelector).slideUp(this.animationTime / 2,
+        e => {
+            $(spanSelector).html(this.contractIcon);
+            $(spanSelector).slideDown(this.animationTime / 2);
+        });
+    }
+}
+
+class URLElement {
+    constructor(id, url) {
+        this.id = id;
+        this.url = url;
+    }
+
+    create()
+    {
+        this.addEventListeners();
+    }
+
+    addEventListeners()
+    {
+        $('#' + this.id).on('click', e =>
+        {
+            this.handleURL();
+        });
+    }
+
+    handleURL()
+    {
+        console.log(this.url);
+    }
+}
+
 class Expandable{
     constructor(id)
     {
@@ -130,16 +231,18 @@ class Expandable{
         this.dataset = null;
         this.parsedHTML = '';
 
-        this.expandIcon = "expand_more";
-        this.contractIcon = "expand_less";
+        this.expandableElements = [];
+        this.URLElements = [];
     }
 
-    load(raw_dataset)
+    create(raw_dataset)
     {
         let dataset = JSON.parse(raw_dataset);
         this.dataset = dataset;
         this.parsedHTML = '';
 
+        //Unbind events
+        $(this.selector).unbind();
         //Clear html
         $(this.selector).html('');
         for (let show of dataset[this.id])
@@ -153,13 +256,58 @@ class Expandable{
                 this.injectExpandableShow(show);
             }
         }
+
+        this.createURLs();
+        this.createExpandables();
+        this.loadMDC();
+    }
+
+    createURLs()
+    {
+        for (let element of this.URLElements)
+        {
+            element.create();
+        }
+    }
+
+    createExpandables()
+    {
+        for (let element of this.expandableElements)
+        {
+            element.create();
+        }
+    }
+
+    loadMDC()
+    {
+        let selectorPrefix = '#' + this.id;
+        $(selectorPrefix + ' .button').addClass('mdc-ripple-surface');
+        $(selectorPrefix + ' .button').attr('data-mdc-auto-init', 'MDCRipple');
+
+        $(selectorPrefix + ' .round-button').addClass('mdc-ripple-surface');
+        $(selectorPrefix + ' .round-button').attr('data-mdc-auto-init', 'MDCRipple');
+
+        $(selectorPrefix + ' .fab').addClass('mdc-ripple-surface');
+        $(selectorPrefix + ' .fab').attr('data-mdc-auto-init', 'MDCRipple');
+
+        $(selectorPrefix + ' .card').addClass('mdc-elevation--z4');
+
+        $(selectorPrefix + ' .mdc-icon-button').attr('data-mdc-auto-init', 'MDCRipple');
+        $(selectorPrefix + ' .mdc-fab').attr('data-mdc-auto-init', 'MDCRipple');
+
+        mdc.autoInit();
     }
 
     injectShow(dataset)
     {
         let name = dataset["name"];
         let id = dataset["id"];
-        let component = this.createShow(name, id)
+
+        //URL Element
+        let urlElement = new URLElement('url-' + id, dataset["url"]);
+        this.URLElements.push(urlElement);
+
+        let component = this.createShow(name, id);
         $(this.selector).append(component);
     }
 
@@ -167,6 +315,11 @@ class Expandable{
     {
         let name = dataset["name"];
         let id = dataset["id"];
+
+        //URL Element
+        let urlElement = new URLElement('url-' + id, dataset["url"]);
+        this.URLElements.push(urlElement);
+
         let component = this.createExpandableShow(name, id);
         $(this.selector).append(component);
 
@@ -175,12 +328,19 @@ class Expandable{
 
     injectSeason(dataset, containerId)
     {
-        for (let season of dataset)
+        for (let i = 0; i < dataset.length; i++)
         {
+            let season = dataset[i];
+
             let name = season["name"];
             let id = season["id"];
             let component = this.createSeason(name, id);
             $('#' + containerId).append(component);
+
+            if ((i + 1) == dataset.length)
+            {
+                $('#' + id).css('margin-bottom', 'var(--border-size)');
+            }
 
             this.injectEpisode(season["episodes"], id);
         }
@@ -192,17 +352,21 @@ class Expandable{
         {
             let name = episode["name"];
             let id = episode["id"];
+
+            //URL Element
+            let urlElement = new URLElement('url-' + id, episode["url"]);
+            this.URLElements.push(urlElement);
+
             let component = this.createEpisode(name, id);
-            console.log(component);
-            $('#' + containerId).append(component);
+            $('#' + containerId + ' .expandee').append(component);
         }
     }
 
     createShow(name, id)
     {
         let component = `
-        <div class="card card-action round">
-            <button class="button primary round-left" id="`+ id +`">
+        <div class="card card-action round"  id="`+ id +`">
+            <button class="button primary round-left" id="url-`+ id +`">
                 <h2>`+ name +`</h2>
             </button>
         </div>`;
@@ -214,15 +378,17 @@ class Expandable{
         let component = `
         <div class="expandable-card" id="`+ id +`">
             <div class="card card-action side-button round">
-                <button class="button primary round-left">
+                <button class="button primary round-left" id="url-`+ id +`">
                     <h2>`+ name +`</h2>
                 </button>
-                <button class="button secondary round-right">
+                <button class="button secondary round-right" id="exp-` + id +`">
                     <span class="icons">expand_more</span>
                 </button>
             </div>
         </div>`;
 
+        let expandableElement = new ExpandableElement(id, 'expandable');
+        this.expandableElements.push(expandableElement);
         return component;
     }
 
@@ -231,21 +397,23 @@ class Expandable{
         let component = `
         <div class="expandable section-card" id="`+ id +`">
             <div class="section-header side-button">
-                <button class="button transparent">
+                <button class="button transparent expander" id="exp-` + id +`">
                     <h2>`+name+`</h2>
                     <span class="icons">expand_more</span>
                 </button>
             </div>
+            <div class="expandee"></div>
         </div>`;
-
+        let expandableElement = new ExpandableElement(id, 'expandee');
+        this.expandableElements.push(expandableElement);
         return component;
     }
 
     createEpisode(name, id)
     {
         let component = `
-        <div class="section-action" id="`+id+`">
-            <button class="button primary fill">
+        <div class="section-action" id="`+ id +`">
+            <button class="button primary fill" id="url-`+ id +`">
                 <h2>`+name+`</h2>
             </button>
         </div>`;
@@ -255,3 +423,4 @@ class Expandable{
 }
 
 let expandable = new Expandable('scan-result');
+expandable.create(jsonExample);
