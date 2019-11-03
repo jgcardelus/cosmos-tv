@@ -1,18 +1,18 @@
 <div class="tab" id="control-pad">
-    <button class="fab">
+    <button class="fab" id="start-mouse-control">
         <span class="icons">gesture</span>
     </button>
     <h1 class="header">Control Pad</h1>
     <div class="card-container section-container" id="mouse-control">
         <div class="card section-card round">
-            <div class="fill round-top">
+            <div class="fill round-top primary">
                 <canvas id="canvas" class="fill round-top"></canvas>
             </div>
             <div class="section-action">
-                <button class="button button-space round-bottom-left primary fill">
+                <button class="button button-space round-bottom-left secondary fill">
                     <p>LEFT</p>
                 </button>
-                <button class="button button-space round-bottom-right primary fill">
+                <button class="button button-space round-bottom-right secondary fill">
                     <p>RIGHT</p>
                 </button>
             </div>
@@ -24,12 +24,12 @@
                 <h2>Type on computer</h2>
             </div>
             <div class="section-action">
-                <input type="text" placeholder="Type in computer" class="primary">
+                <input type="text" placeholder="Type in computer" class="primary" id="type-computer">
                 <div class="side-button fill-height">
-                    <button class="button secondary fill">
+                    <button class="button secondary fill" id="input-delete">
                         <span class="icons">backspace</span>
                     </button>
-                    <button class="button secondary fill">
+                    <button class="button secondary fill" id="input-done">
                         <span class="icons">done</span>
                     </button>
                 </div>

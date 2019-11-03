@@ -8,6 +8,8 @@ import socket
 import config
 import compiler
 
+import framework as fmk
+
 # SERVER VARS
 port = config.port
 
@@ -24,16 +26,29 @@ def validate_connection():
     print("User connected, validating websocket connection")
     server.emit("connection_validated")
 
+    fmk.frontend_start_seq()
+
+# FRONTED COMUNICATION
+def emit(header, data):
+    server.emit(header, data)
+
+@server.on("start-app")
+def request_start(id_):
+    fmk.start_app(id_)
+
+@server.on("start-app-search")
+def request_search(id_, search_url):
+    fmk.start_app_search(id_, search_url)
+
 # SERVER ROUTING
 @web.route('/')
 def index():
     return render_template("out-app.html")
 
 
-def change_frontend_connection():
+def change_frontend_connection(ip_addr):
     global port
 
-    ip_addr = get_ip()
     file_path = os.path.join(os.getcwd(), 'static/framework.js')
     client_server = open(file_path, 'r')
     client_server_lines = client_server.readlines()
@@ -59,11 +74,27 @@ def get_ip():
 def start():
     global port
 
-    change_frontend_connection()
+    ip_addr = get_ip()
+    change_frontend_connection(ip_addr)
+
     if config.DEBUG:
         compiler.start()
 
-    connection_url = 'http://' + get_ip() + ':' + str(port)
+    connection_url = 'http://' + ip_addr + ':' + str(port)
+    print("Server started at ip: %s" % (connection_url))
+
+    server.run(web, host='0.0.0.0', port=port)
+
+def start_offline():
+    global port
+
+    ip_addr = "10.42.0.1"
+    change_frontend_connection(ip_addr)
+
+    if config.DEBUG:
+        compiler.start()
+
+    connection_url = 'http://' + ip_addr + ':' + str(port)
     print("Server started at ip: %s" % (connection_url))
 
     server.run(web, host='0.0.0.0', port=port)

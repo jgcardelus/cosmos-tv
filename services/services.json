@@ -1,0 +1,30 @@
+{
+    "apps" : [
+        {
+            "name": "Netflix",
+            "id": "netflix",
+            "search-prefix": "https://www.netflix.com/search?q=",
+            "operator": "%20"
+        }        
+    ],
+    "others": [
+        {
+            "name": "Amazon Prime",
+            "id": "amazon-prime",
+            "search-prefix": "https://www.primevideo.com/search/ref=atv_nb_sr?phrase=",
+            "operator": "+"
+        },
+        {
+            "name": "Youtube",
+            "id": "youtube",
+            "search-prefix": "https://www.youtube.com/results?search_query=",
+            "operator": "+"
+        },
+        {
+            "name": "Movistar+",
+            "id": "movistar-plus",
+            "search-prefix": "http://ver.movistarplus.es/busqueda/?texto=",
+            "operator": "%2520"
+        }
+    ]
+}

@@ -109,12 +109,17 @@ class TabPage {
 
 //PAGES AND TABS
 class Tabs {
-    constructor(initialTab, containerId, navbarId = null) {
+    constructor(initialTab, id, navbarId = null) {
+        //TABS AND TAB-REFERENCE
         this.tabs = [];
-        this.tabsSelector = '.tabs-container' + containerId;
         this.actualTab = initialTab;
-        this.containerId = containerId;
+
+        //IDs AND SELECTORS
+        this.id = id;
+        this.containerId = '#' + id;
+        this.tabsSelector = '.tabs-container' + this.containerId;
         this.navbarId = navbarId;
+        this.navbarSelector = '#' + navbarId;
 
         //SWIPPING AND SCROLLING
         this.allowPageChange = true;
@@ -135,15 +140,15 @@ class Tabs {
         tabs.css('width', tabPages.length * 100 + 'vw');
         //Define buttons
         let tabButtons = null;
-        if (this.navbarId != null) {
-            tabButtons = $('.navbar' + this.navbarId + ' .navbar-btn button');
+        if (this.navbarSelector != null) {
+            tabButtons = $('.navbar' + this.navbarSelector + ' .navbar-btn button');
             this.changeTabsHeight();
         }
 
         for (let i = 0; i < tabPages.length; i++) {
             let tabId = tabPages[i].id;
             let tabButton = null;
-            if (this.navbarId != null) {
+            if (this.navbarSelector != null) {
                 tabButton = new TabButton(i, tabId, tabButtons[i]);
             }
             let tabPage = new TabPage(i, tabId, this.tabsSelector);
@@ -157,15 +162,15 @@ class Tabs {
     }
 
     changeTabsHeight() {
-        let navbarHeight = $('.navbar' + this.navbarId).css('height');
+        let navbarHeight = $('.navbar' + this.navbarSelector).css('height');
         let minHeight = 'calc(100vh - ' + navbarHeight + ')';
         $(this.tabsSelector).css('min-height', minHeight);
     }
 
     addPageBehaviour() {
         //BUTTON BEHAVIOUR
-        if (this.navbarId != null) {
-            $('.navbar' + this.navbarId + ' .navbar-btn button').on('click', elem => {
+        if (this.navbarSelector != null) {
+            $('.navbar' + this.navbarSelector + ' .navbar-btn button').on('click', elem => {
                 this.buttonClick(elem)
             });
         }
@@ -294,7 +299,7 @@ class Tabs {
 
 
     change(n) {
-        if (this.navbarId != null)
+        if (this.navbarSelector != null)
         {
             for (let i = 0; i < this.tabs.length; i++) {
                 this.tabs[i].tabButton.deactivate();
@@ -304,7 +309,7 @@ class Tabs {
         let tab = this.tabs[n];
         this.activateFab(n);
         tab.tabPage.change(this);
-        if (this.navbarId != null)
+        if (this.navbarSelector != null)
         {
             tab.tabButton.activate();
         }
@@ -316,7 +321,7 @@ class Tabs {
     }
 
     go(n) {
-        if (this.navbarId != null)
+        if (this.navbarSelector != null)
         {
             for (let i = 0; i < this.tabs.length; i++) {
                 this.tabs[i].tabButton.deactivate();
@@ -326,7 +331,7 @@ class Tabs {
         let tab = this.tabs[n];
         this.activateFab(n);
         tab.tabPage.go(this);
-        if (this.navbarId != null)
+        if (this.navbarSelector != null)
         {
             tab.tabButton.activate();
         }

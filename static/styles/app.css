@@ -612,6 +612,17 @@ input[type=text] {
     align-items: center;
 }
 
+/* APP ELEMENT SYTLES */
+#app {
+    overflow-x:auto;
+}
+
+@media only screen and (max-width: 900px) {
+    #app {
+        overflow-x: hidden;
+    }
+}
+
 /* KEEP AT THE BOTTOM */
 .hidden {
     display: none;

@@ -1,53 +1,10 @@
 //DEFINING PAGE
-let scanTabs = new Tabs(0, "#scan");
+let scanTabs = new Tabs(0, "scan");
 scanTabs.create();
 tabs.push(scanTabs);
 
 //PAGE ACTIVATION AND DEACTIVATION
-function activateScan() {
-	for (let i = 0; i < tabs.length; i++) {
-		let tab = tabs[i];
-		if (tab != scanTabs) {
-			tab.allowPageChange = false;
-		}
-	}
-	scanTabs.allowPageChange = true;
-	$("#scan").css("z-index", "500");
-	$("#scan tabs").css("z-index", "500");
-	if ($("#scan").hasClass("hidden")) {
-		$("#scan").removeClass("hidden");
-	}
-	scanTabs.change(1);
-}
-
-function deactivateScan() {
-	$("#scan").css("z-index", "0");
-	$("#scan tabs").css("z-index", "0");
-	for (let i = 0; i < tabs.length; i++) {
-		let tab = tabs[i];
-		tab.allowPageChange = false;
-	}
-	appTabs.allowPageChange = true;
-	if (!$("#scan").hasClass("hidden")) {
-		$("#scan").addClass("hidden");
-	}
-}
-
-let hasChanged = false;
-scanTabs.on("page-change", () => {
-	if (scanTabs.actualTab == 0) {
-		if (hasChanged) {
-			deactivateScan();
-			hasChanged = false;
-		}
-	} else if (scanTabs.actualTab == 1) {
-		hasChanged = true;
-	}
-});
-
-$("#close-span").on("click", () => {
-	scanTabs.change(0);
-});
+let scanPopup = new Popup("scan", scanTabs, appTabs);
 
 // PAGE BEHAVIOUR
 let jsonExample = `
@@ -122,11 +79,11 @@ class ExpandableElement {
 	}
 
 	create() {
-		this.addEventListeners();
+		this.events();
 		this.contractFast();
 	}
 
-	addEventListeners() {
+	events() {
 		let selector = "#" + this.id + " #exp-" + this.id;
 		$(selector).on("click", e => {
 			this.expanderHandler();
@@ -185,10 +142,10 @@ class URLElement {
 	}
 
 	create() {
-		this.addEventListeners();
+		this.events();
 	}
 
-	addEventListeners() {
+	events() {
 		$("#" + this.id).on("click", e => {
 			this.handleURL();
 		});
@@ -229,7 +186,7 @@ class Expandable {
 
 		this.createUrls();
 		this.createExpandables();
-		this.loadMDC();
+		this.addMDC();
 	}
 
 	createUrls() {
@@ -244,7 +201,7 @@ class Expandable {
 		}
 	}
 
-	loadMDC() {
+	addMDC() {
 		let selectorPrefix = "#" + this.id;
 		$(selectorPrefix + " .button").addClass("mdc-ripple-surface");
 		$(selectorPrefix + " .button").attr("data-mdc-auto-init", "MDCRipple");

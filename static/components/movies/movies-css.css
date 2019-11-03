@@ -1,0 +1,9 @@
+#opened-apps
+{
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+.active-app .button h2, .active-app .button p{
+    color: var(--secondary);
+}

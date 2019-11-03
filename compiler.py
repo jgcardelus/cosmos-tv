@@ -125,9 +125,8 @@ class Compiler:
 		for _, folders, _ in os.walk('.'):
 			if len(folders) > 0:
 				print("Loading components")
-				progressbar = Progressbar(len(folders), 0)
 				for i, folder in enumerate(folders):
-					progressbar.update(i + 1, "Found %s" % (folder))
+					print("		Found %s" % (folder))
 
 					folder_path = os.path.join(path, folder)
 					component = Component(folder_path, folder)
@@ -153,7 +152,7 @@ class Compiler:
 				self.css_paths.extend(compiler.css_paths)
 				self.js_paths.extend(compiler.js_paths)
 			else:
-				self.web_array[i] = '<!-- ' + component.name_ + ' has been loaded-->'
+				self.web_array[i] = '<!-- ' + component.name_ + ' has been loaded. Headless-->'
 			self.css_paths.extend(component.css_paths)
 			self.js_paths.extend(component.js_paths)
 		else:
@@ -169,10 +168,9 @@ class Compiler:
 				break
 
 		print("Adding css paths")
-		progressbar = Progressbar(len(self.css_paths), 0)
 		for i, css_path in enumerate(self.css_paths):
 			css_string = '<link rel="stylesheet" href="'+ css_path +'">'
-			progressbar.update(i + 1, "Adding %s to css paths" % css_path)
+			print("		Adding %s to css paths" % css_path)
 			self.web_array.insert((head_pos - 1), css_string)
 
 	def load_js(self):
@@ -182,17 +180,14 @@ class Compiler:
 				html_pos = i
 
 		print("Adding js paths")
-		progressbar = Progressbar(len(self.js_paths), 0)
 		for i, js_path in enumerate(self.js_paths):
 			js_string = '<script src="'+js_path+'"></script>'
-			progressbar.update(i + 1, "Adding %s to js paths" % js_string)
+			print("		Adding %s to js paths" % js_string)
 			self.web_array.insert((html_pos - 1), js_string)
 
 	def scan_document(self):
 		print("\nScanning doc and adding templates")
-		progressbar = Progressbar(len(self.web_array), 0)
 		for i, line in enumerate(self.web_array):
-			progressbar.update(i + 1)
 			needs_compiling = line.find('{{')
 			if needs_compiling != -1:
 				start = needs_compiling + 2
@@ -204,6 +199,7 @@ class Compiler:
 					if char != ' ':
 						component_name += char
 
+				print("Adding and scanning %s" % (component_name))
 				self.add_component(component_name, i)
 
 compiler = Compiler(path, components, output)

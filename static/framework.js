@@ -1,5 +1,6 @@
 //Global variables
 const DEBUG = false;
+const startPage = 2;
 let allowPageChange = true;
 
 //CONNECT TO SERVER
@@ -24,6 +25,7 @@ function loadMDC() {
     $('.round-button').attr('data-mdc-auto-init', 'MDCRipple');
 
     $('.fab').addClass('mdc-ripple-surface');
+    $('.fab').addClass('mdc-elevation--z6');
     $('.fab').attr('data-mdc-auto-init', 'MDCRipple');
 
     $('.card').addClass('mdc-elevation--z4');
@@ -52,8 +54,94 @@ $(window).on('resize', function() {
     windowHeight = $(window).height();
 });
 
-//TABS
+//EVENTS
+let eventTriggers = {};
+function eventOn(event, callback)
+{
+    if (!eventTriggers[event])
+    {
+        eventTriggers[event] = [];
+    }
+    eventTriggers[event].push(callback);
+}
+
+function eventTrigger(event, params)
+{
+    if (eventTriggers[event])
+    {
+        for (let trigger of eventTriggers[event])
+        {
+            trigger(params);
+        }
+    }
+}
+
+//TABS AND POPUPS
 let tabs = [];
+
+class Popup
+{
+    constructor(id, tabs, mainTab)
+    {
+        this.id = id;
+        this.selector = '#' + id;
+        this.tabs = tabs;
+        this.mainTab = mainTab;
+
+        this.hasChanged = false;
+
+        this.events();
+    }
+
+    activate()
+    {
+        for (let i = 0; i < tabs.length; i++) {
+            let tab = tabs[i];
+            if (tab != this.tabs) {
+                tab.allowPageChange = false;
+            }
+        }
+        this.tabs.allowPageChange = true;
+        $(this.selector).css("z-index", "500");
+        $(this.selector + " .tabs").css("z-index", "500");
+        if ($(this.selector).hasClass("hidden")) {
+            $(this.selector).removeClass("hidden");
+        }
+        this.tabs.change(1);
+    }
+
+    deactivate()
+    {
+        $(this.selector).css("z-index", "0");
+        $(this.selector + " .tabs").css("z-index", "0");
+        for (let i = 0; i < tabs.length; i++) {
+            let tab = tabs[i];
+            tab.allowPageChange = false;
+        }
+        this.mainTab.allowPageChange = true;
+        if (!$(this.selector).hasClass("hidden")) {
+            $(this.selector).addClass("hidden");
+        }
+    }
+
+    events()
+    {
+        this.tabs.on("page-change", () => {
+            if (this.tabs.actualTab == 0) {
+                if (this.hasChanged) {
+                    this.deactivate()
+                    this.hasChanged = false;
+                }
+            } else if (this.tabs.actualTab == 1) {
+                this.hasChanged = true;
+            }
+        });
+
+        $("#close-" + this.id).on("click", () => {
+            this.tabs.change(0);
+        });
+    }
+}
 
 //NOTIFICATIONS
 const SHORT = 2500;
