@@ -12,7 +12,8 @@ port = 8080
 
 # SELENIUM DRIVER
 driver_path = os.path.join(os.getcwd(), 'chrome-driver', 'chromedriver')
-data_dir_path = os.path.join(os.getcwd(), 'chrome-driver', 'chrome-preferences')
+# data_dir_path = os.path.join(os.getcwd(), 'chrome-driver', 'chrome-preferences')
+data_dir_path = '/home/jgcardelus/Desktop/Coding_Projects/CosmosTv-Settings/chrome-preferences'
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
