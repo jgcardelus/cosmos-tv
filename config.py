@@ -11,10 +11,11 @@ DEBUG = True
 port = 8080
 
 # SELENIUM DRIVER
-driver_path = os.getcwd() + '/chrome-driver/chromedriver'
+driver_path = os.path.join(os.getcwd(), 'chrome-driver', 'chromedriver')
+data_dir_path = os.path.join(os.getcwd(), 'chrome-driver', 'chrome-preferences')
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('user-data-dir=' + data_dir_path)
 
-
-# driver.maximize_window()
+settings_path = '/home/jgcardelus/Desktop/Coding_Projects/CosmosTv-Settings/settings.json'

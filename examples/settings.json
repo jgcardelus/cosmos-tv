@@ -1,0 +1,8 @@
+{
+	"apps": [ {
+		"name": "netflix",
+		"username": "email@something.com",
+		"password": "password",
+		"netflix-user": "user"
+	}]
+}

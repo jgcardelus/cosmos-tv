@@ -3,17 +3,17 @@ let openedAppsExample = `
         "opened-apps": [
             {
                 "show": "Netflix",
-                "episode-name": "Big Mouth",
+                "show-name": "Big Mouth",
                 "id": "netflix-big-mouth"
             },
             {
                 "show": "Prime",
-                "episode-name": "The Grand Tour",
+                "show-name": "The Grand Tour",
                 "id": "prime-the-grand-tour"
             },
             {
                 "show": "YouTube",
-                "episode-name": "Cody Ko",
+                "show-name": "Cody Ko",
                 "id": "youtube-cody-ko"
             }
         ]
@@ -25,17 +25,17 @@ let openedAppsTest = `
         "opened-apps": [
             {
                 "show": "Netflix",
-                "episode-name": "Big Mouth",
+                "show-name": "Big Mouth",
                 "id": "netflix-big-mouth-1"
             },
             {
                 "show": "Prime",
-                "episode-name": "The Grand Tour",
+                "show-name": "The Grand Tour",
                 "id": "prime-the-grand-tour-1"
             },
             {
                 "show": "YouTube",
-                "episode-name": "Cody Ko",
+                "show-name": "Cody Ko",
                 "id": "youtube-cody-ko-1"
             }
         ]
@@ -158,6 +158,17 @@ class OpenedApps
         
     }
 
+    update(raw_dataset)
+    {
+        let dataset = JSON.parse(raw_dataset);
+        let app = dataset["opened-apps"][0];
+
+        let id = app["id"];
+
+        $('#' + id + ' .button h2').html(app["show"]);
+        $('#' + id + ' .button p').html(app["show-name"]);
+    }
+
     create(raw_dataset)
     {
         if (this.openedApps.length == 0)
@@ -255,7 +266,7 @@ class OpenedApps
     {
         let show = app["show"];
         let appId = app["id"];
-        let episodeName = app["episode-name"];
+        let episodeName = app["show-name"];
         let component = `
             <div class="card card-action side-button round" id="` + appId + `">
                 <button class="button primary round-left" id="act-` + appId + `">

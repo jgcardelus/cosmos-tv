@@ -1,3 +1,5 @@
+import random
+
 import config
 import server
 import actuators
@@ -26,9 +28,29 @@ def start_offline():
     server.start_offline()
 
 # APPS INIT SEQUENCE
+def generate_id_identifier(prefix):
+    global opened_apps
+
+    identifier = random.randint(0, 1000000)
+    id_ = prefix + '-' + str(identifier)
+
+    exists = False
+    for app in opened_apps:
+        if app.id_ == id_:
+            exists = True
+            break
+
+    if exists:
+        id_ = generate_id_identifier(prefix)
+    
+    return id_
+
 def start_app(id_):
+    global opened_apps
+
     if id_ == "netflix":
         netflix = Netflix()
+        netflix.id_ = generate_id_identifier(netflix.id_)
         opened_apps.append(netflix)
 
         netflix.start()
