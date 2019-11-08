@@ -11,59 +11,90 @@ let jsonExample = `
     {"scan-result": [{
             "name": "Big Mouth",
             "url": "some url",
-            "id": "1",
-            "seasons":[{
-                "name": "Season 1",
-                "id": "1-s1",
-                "episodes": [{
-                    "name": "Episode 1",
-                    "id": "1-s1-ep1",
-                    "url": "some url"
-                },
-                {
-                    "name": "Episode 2",
-                    "id": "1-s1-ep2",
-                    "url": "some url"
-                }]
-            }, {
-                "name": "Season 2",
-                "id": "1-s2",
-                "episodes": [{
-                    "name": "Episode 1",
-                    "id": "1-s2-ep1",
-                    "url": "some url"
-                },
-                {
-                    "name": "Episode 2",
-                    "id": "1-s2-ep2",
-                    "url": "some url"
-                }]
-            }]
+			"id": "1",
+			"episodes":[]
         },{
             "name": "Family Guy",
             "url": "some url",
-            "id": "2",
-            "seasons":[{
-                "name": "Season 1",
-                "id": "2-s1",
-                "episodes": [{
-                    "name": "Episode 1",
-                    "id": "2-s1-ep1",
-                    "url": "some url"
-                },
-                {
-                    "name": "Episode 2",
-                    "id": "2-s1-ep2",
-                    "url": "some url"
-                }]
-            }]
+			"id": "2",
+			"episodes":[]
         },{
             "name": "Pulp Fiction",
             "id": "3",
             "url": "some url",
-            "seasons":[]
+            "episodes":[]
         }]
     }
+`;
+
+let jsonExample2 = `
+	{"scan-result": [{
+		"name": "Season 1",
+		"url": "some url",
+		"id": "1",
+		"episodes":[
+			{
+				"name": "Episode 1",
+				"id": "1-ep-1",
+				"url": "some url"
+			},
+			{
+				"name": "Episode 2",
+				"id": "1-ep-2",
+				"url": "some url"
+			},
+			{
+				"name": "Episode 3",
+				"id": "1-ep-3",
+				"url": "some url"
+			}
+		]
+	},
+	{
+		"name": "Season 2",
+		"url": "some url",
+		"id": "2",
+		"episodes":[
+			{
+				"name": "Episode 1",
+				"id": "2-ep-1",
+				"url": "some url"
+			},
+			{
+				"name": "Episode 2",
+				"id": "2-ep-2",
+				"url": "some url"
+			},
+			{
+				"name": "Episode 3",
+				"id": "2-ep-3",
+				"url": "some url"
+			}
+		]
+	},
+	{
+		"name": "Season 3",
+		"url": "some url",
+		"id": "3",
+		"episodes":[
+			{
+				"name": "Episode 1",
+				"id": "3-ep-1",
+				"url": "some url"
+			},
+			{
+				"name": "Episode 2",
+				"id": "3-ep-2",
+				"url": "some url"
+			},
+			{
+				"name": "Episode 3",
+				"id": "3-ep-3",
+				"url": "some url"
+			}
+		]
+	}
+]}
 `;
 
 class ExpandableElement {
@@ -174,13 +205,13 @@ class Expandable {
 
 		//Unbind events
 		$(this.selector).unbind();
-		//Clear html
+
 		$(this.selector).html("");
 		for (let show of dataset[this.id]) {
-			if (show["seasons"].length == 0) {
+			if (show["episodes"].length == 0) {
 				this.injectShow(show);
 			} else {
-				this.injectExpandableShow(show);
+				this.injectSeason(show);
 			}
 		}
 
@@ -236,9 +267,14 @@ class Expandable {
 
 		let component = this.createShow(name, id);
 		$(this.selector).append(component);
+
+		$('#' + id).fadeOut(0, function() 
+		{
+			$('#' + id).fadeIn(this.animationTime);
+		});
 	}
 
-	injectExpandableShow(dataset) {
+	injectSeason(dataset) {
 		let name = dataset["name"];
 		let id = dataset["id"];
 
@@ -246,31 +282,21 @@ class Expandable {
 		let urlElement = new URLElement("url-" + id, dataset["url"]);
 		this.urlELements.push(urlElement);
 
-		let component = this.createExpandableShow(name, id);
+		let component = this.createSeason(name, id);
 		$(this.selector).append(component);
 
-		this.injectSeason(dataset["seasons"], id);
-	}
+		this.injectEpisode(dataset["episodes"], id);
 
-	injectSeason(dataset, containerId) {
-		for (let i = 0; i < dataset.length; i++) {
-			let season = dataset[i];
-
-			let name = season["name"];
-			let id = season["id"];
-			let component = this.createSeason(name, id);
-			$("#" + containerId).append(component);
-
-			if (i + 1 == dataset.length) {
-				$("#" + id).css("margin-bottom", "var(--border-size)");
-			}
-
-			this.injectEpisode(season["episodes"], id);
-		}
+		$('#' + id).fadeOut(0, function() 
+		{
+			$('#' + id).fadeIn(this.animationTime);
+		});
 	}
 
 	injectEpisode(dataset, containerId) {
-		for (let episode of dataset) {
+		for (let i = 0; i < dataset.length; i++) {
+			let episode = dataset[i];
+
 			let name = episode["name"];
 			let id = episode["id"];
 
@@ -279,47 +305,36 @@ class Expandable {
 			this.urlELements.push(urlElement);
 
 			let component = this.createEpisode(name, id);
-			$("#" + containerId + " .expandee").append(component);
+			$("#" + containerId + " .expandable").append(component);
+
+			if (i + 1 == dataset.length) {
+				$("#" + id).css("margin-bottom", "var(--border-size)");
+			}
 		}
 	}
 
 	createShow(name, id) {
 		let component =
 			`
-        <div class="card card-action round"  id="` +
-			id +
-			`">
-            <button class="button primary round-left" id="url-` +
-			id +
-			`">
-                <h2>` +
-			name +
-			`</h2>
+        <div class="card card-action round"  id="` +id +`">
+            <button class="button primary round-left" id="url-` +id +`">
+                <h2>` +name +`</h2>
             </button>
         </div>`;
 		return component;
 	}
 
-	createExpandableShow(name, id) {
+	createSeason(name, id) {
 		let component =
 			`
-        <div class="expandable-card" id="` +
-			id +
-			`">
-            <div class="card card-action side-button round">
-                <button class="button primary round-left" id="url-` +
-			id +
-			`">
-                    <h2>` +
-			name +
-			`</h2>
+        <div class="expandable-card" id="` +id +`">
+            <div class="card card-action round side-button">
+                <button class="button primary fill-w round-left" id="exp-` +id +`">
+					<h2>` +name +`</h2>
+					<span class="icons">expand_more</span>
                 </button>
-                <button class="button secondary round-right" id="exp-` +
-			id +
-			`">
-                    <span class="icons">expand_more</span>
-                </button>
-            </div>
+			</div>
+			<div class="expandable section-card"><div>
         </div>`;
 
 		let expandableElement = new ExpandableElement(id, "expandable");
@@ -327,41 +342,12 @@ class Expandable {
 		return component;
 	}
 
-	createSeason(name, id) {
-		let component =
-			`
-        <div class="expandable section-card" id="` +
-			id +
-			`">
-            <div class="section-header side-button">
-                <button class="button transparent expander" id="exp-` +
-			id +
-			`">
-                    <h2>` +
-			name +
-			`</h2>
-                    <span class="icons">expand_more</span>
-                </button>
-            </div>
-            <div class="expandee"></div>
-        </div>`;
-		let expandableElement = new ExpandableElement(id, "expandee");
-		this.expandableElements.push(expandableElement);
-		return component;
-	}
-
 	createEpisode(name, id) {
 		let component =
 			`
-        <div class="section-action" id="` +
-			id +
-			`">
-            <button class="button primary fill" id="url-` +
-			id +
-			`">
-                <h2>` +
-			name +
-			`</h2>
+        <div class="section-action terciary" id="` +id +`">
+            <button class="button transparent fill" id="url-` +id +`">
+                <h2>` + name +`</h2>
             </button>
         </div>`;
 
@@ -370,4 +356,4 @@ class Expandable {
 }
 
 let expandable = new Expandable("scan-result");
-expandable.create(jsonExample);
+expandable.create(jsonExample2);

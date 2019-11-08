@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 import server
 import config
+from services.show import Show, Episode
 
 username = None
 password = None
@@ -38,6 +39,8 @@ class Netflix:
         self.total_time = 0
         self.scan_result = None
         self.skip_requested = False
+
+        self.shows = []
         self.show_name = None
         self.episode = None
         self.season = None
@@ -103,20 +106,38 @@ class Netflix:
     def scan(self):
         print("Scanning")
 
+        # Wait until main page has been loaded
+        self.wait_until('//ul[@class="tabbed-primary-navigation"]')
+
         self.scroll_page()
         self.driver.execute_script("window.scrollTo(0, 0);")
         
-        elements = self.driver.find_elements_by_css_selector('div.lolomoRow')
-        shows = self.driver.find_elements_by_xpath('//div[@class="slider-item"]//a[@role="link"]')
-        for show in shows:
-            print(show.get_attribute('aria-label'))
-        print(len(elements))
+        elements = self.driver.find_elements_by_class_name('slider-item')
+        # shows_container = elements.find_element_by_xpath('//p[@class="fallback-text"]')
 
+    
+        shows = []
+        for element in elements:
+            try:
+                show_container = element.find_element_by_css_selector('p.fallback-text')
+                url_container = element.find_element_by_css_selector("a[role='link']")
 
+                show_name = show_container.get_attribute('innerHTML')
+                url = url_container.get_attribute('href')
+
+                show = Show(show_name, url, element)
+                self.shows.append(show)
+            except exceptions.NoSuchElementException:
+                pass
 
     def start_checks(self):
         # FIND LOG-IN
-        log_in = self.driver.find_element_by_xpath('//a[@data-uia="header-login-link"]')
+        log_in = None
+        try:
+            log_in = self.driver.find_element_by_xpath('//a[@data-uia="header-login-link"]')
+        except exceptions.NoSuchElementException:
+            pass
+        
         if log_in != None:
             log_in.click()
             username_input = self.driver.find_element_by_xpath('//input[@id="id_userLoginId"]')
@@ -127,7 +148,12 @@ class Netflix:
             submit_log_in = self.driver.find_element_by_xpath('//button[@data-uia="login-submit-button"]')
             submit_log_in.click()
 
-        profile_gate = self.driver.find_element_by_xpath('//ul[@class="choose-profile"]')
+        profile_gate = None
+        try:
+            profile_gate = self.driver.find_element_by_xpath('//ul[@class="choose-profile"]')
+        except exceptions.NoSuchElementException:
+            pass
+
         if profile_gate != None:
             profiles = self.driver.find_elements_by_xpath('//a[@class="profile-link"]')
             netflix_users = self.driver.find_elements_by_xpath('//span[@class="profile-name"]')
@@ -136,8 +162,8 @@ class Netflix:
                     profiles[i].click()
                     break
 
-            # Wait until main page has been loaded
-            self.wait_until('//ul[@class="tabbed-primary-navigation"]')
+    def parse_scan():
+        pass
 
     def focus(self):
         self.driver.maximize_window()

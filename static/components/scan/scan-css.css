@@ -1,3 +1,10 @@
-#scan-result .card-container .card .button {
+#scan-result .card .button
+{
     justify-content: flex-start;
+}
+
+#scan-result .expandable-card .side-button .button
+{
+    width: 100%;
+    justify-content: space-between;
 }
