@@ -48,6 +48,8 @@ def generate_id_identifier(prefix):
 def start_app(id_):
     global opened_apps
 
+    print("Called")
+
     if id_ == "netflix":
         netflix = Netflix()
         netflix.id_ = generate_id_identifier(netflix.id_)
@@ -57,3 +59,9 @@ def start_app(id_):
 
 def start_app_search(id_, search_url):
     print(id_, search_url)
+
+def test():
+    start_app("netflix")
+
+    netflix = opened_apps[0]
+    netflix.start_show("Rick and Morty", "some-url")
