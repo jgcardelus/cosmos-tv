@@ -215,7 +215,7 @@ class Tabs {
                     this.prev();
                 }
             } else {
-                this.tabs[this.actualTab].tabPage.scroll(yDirection);
+                this.tabs[this.actualTab].tabPage.scroll(yDirection * scrollingSoftener);
             }
         }
     }

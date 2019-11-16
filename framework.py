@@ -1,16 +1,124 @@
 import random
+import json
 
 import config
 import server
 import actuators
 
+# SERVICES IMPORTS
 from services.netflix import Netflix
 
+## FRAMEOWRK VARIABLES
 # MEDIA VARS
 opened_apps = []
 active_app = None
 volume = 0
 is_mute = False
+
+# PARSE
+class Parser:
+    def __init__(self):
+        self.unwanted_chars = "!·$%&/()='`*;:-|@#~½¬{[]}[─·̣ \\<>"
+
+    def clean_text(self, raw_text):
+        text = ""
+        for letter in raw_text:
+            if letter not in self.unwanted_chars:
+                text += letter
+
+        return text
+
+    def generate_show_id(self, name, i, prefix=None):
+        show_id = ""
+
+        if prefix != None:
+            show_id = prefix
+        
+        name_chunks = name.lower().split(' ')
+        for i in range(len(name_chunks)):
+            name_chunks[i] = self.clean_text(name_chunks[i])
+
+        name_id = "".join(name_chunks)
+
+        show_id += name_id + '-' + str(i)
+
+        return show_id
+
+    def parse_shows(self, shows):
+        shows_dict = {"scan-result": []}
+        for i, show in enumerate(shows):
+            show_id = self.generate_show_id(show.name, i)
+
+            show_dict = {
+                "name": show.name,
+                "url": show.url,
+                "id": show_id,
+                "episodes": []
+            }
+
+            shows_dict["scan-result"].append(show_dict)
+
+        shows_json = json.dumps(shows_dict)
+        return shows_json
+
+    def parse_season(self, season):
+        season_id = "title-season-" + str(season.number)
+        season_name = "Season " + str(season.number)
+
+        season_dict = {
+            "name": season_name,
+            "url": "no-url",
+            "id": season_id,
+            "episodes": []
+        }
+
+        for episode in season.episodes:
+            episode_id = str(season.number) + '-ep-' + str(episode.number)
+            episode_dict = {
+                "name": episode.name,
+                "url": episode.url,
+                "id": episode_id
+            }
+
+            season_dict["episodes"].append(episode_dict)
+
+        return season_dict
+
+    def parse_series(self, show):
+        show_dict = {"scan-result": []}
+
+        play_id = self.generate_show_id(show.name, 0, "play-")
+        play_button = {
+            "name": "Play",
+            "url": show.url,
+            "id": play_id,
+            "episodes": []
+        }
+
+        show_dict["scan-result"].append(play_button)
+        
+        for season in show.seasons:
+            season_dict = self.parse_season(season)
+            show_dict["scan-result"].append(season_dict)
+
+        show_json = json.dumps(show_dict)
+        return show_json
+
+    def parse_app(self, show, show_name, app_id):
+        if show_name == "":
+            show_name = "  "
+            
+        open_app_dict = {"opened-apps": [
+            {
+                "show": show,
+                "show_name": show_name,
+                "id": app_id
+            }
+        ]}
+
+        open_app_json = json.dumps(open_app_dict)
+        return open_app_json
+
 
 # START SEQUENCE
 def start():
@@ -45,20 +153,42 @@ def generate_id_identifier(prefix):
     
     return id_
 
+def start_show(name, url):
+    global active_app
+
+    if active_app != None:
+        active_app.start_show(name, url)
+    else:
+        print(len(opened_apps))
+        server.raise_not("There is no opened app at the moment.")
+    
+
 def start_app(id_):
     global opened_apps
-
-    print("Called")
+    global active_app
 
     if id_ == "netflix":
         netflix = Netflix()
         netflix.id_ = generate_id_identifier(netflix.id_)
         opened_apps.append(netflix)
 
+        active_app = netflix
+        if active_app != None:
+            print("There is an active app")
         netflix.start()
 
 def start_app_search(id_, search_url):
     print(id_, search_url)
+
+def close_app(app_id):
+    global opened_apps
+
+    for i, open_app in enumerate(opened_apps):
+        if open_app.id_ == app_id:
+            open_app.close()
+            opened_apps.pop(i)
+            break
+
 
 def test():
     start_app("netflix")

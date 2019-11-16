@@ -7,96 +7,6 @@ tabs.push(scanTabs);
 let scanPopup = new Popup("scan", scanTabs, appTabs);
 
 // PAGE BEHAVIOUR
-let jsonExample = `
-    {"scan-result": [{
-            "name": "Big Mouth",
-            "url": "some url",
-			"id": "1",
-			"episodes":[]
-        },{
-            "name": "Family Guy",
-            "url": "some url",
-			"id": "2",
-			"episodes":[]
-        },{
-            "name": "Pulp Fiction",
-            "id": "3",
-            "url": "some url",
-            "episodes":[]
-        }]
-    }
-`;
-
-let jsonExample2 = `
-	{"scan-result": [{
-		"name": "Season 1",
-		"url": "some url",
-		"id": "1",
-		"episodes":[
-			{
-				"name": "Episode 1",
-				"id": "1-ep-1",
-				"url": "some url"
-			},
-			{
-				"name": "Episode 2",
-				"id": "1-ep-2",
-				"url": "some url"
-			},
-			{
-				"name": "Episode 3",
-				"id": "1-ep-3",
-				"url": "some url"
-			}
-		]
-	},
-	{
-		"name": "Season 2",
-		"url": "some url",
-		"id": "2",
-		"episodes":[
-			{
-				"name": "Episode 1",
-				"id": "2-ep-1",
-				"url": "some url"
-			},
-			{
-				"name": "Episode 2",
-				"id": "2-ep-2",
-				"url": "some url"
-			},
-			{
-				"name": "Episode 3",
-				"id": "2-ep-3",
-				"url": "some url"
-			}
-		]
-	},
-	{
-		"name": "Season 3",
-		"url": "some url",
-		"id": "3",
-		"episodes":[
-			{
-				"name": "Episode 1",
-				"id": "3-ep-1",
-				"url": "some url"
-			},
-			{
-				"name": "Episode 2",
-				"id": "3-ep-2",
-				"url": "some url"
-			},
-			{
-				"name": "Episode 3",
-				"id": "3-ep-3",
-				"url": "some url"
-			}
-		]
-	}
-]}
-`;
-
 class ExpandableElement {
 	constructor(id, children) {
 		this.id = id;
@@ -167,8 +77,9 @@ class ExpandableElement {
 }
 
 class URLElement {
-	constructor(id, url) {
+	constructor(id, name, url) {
 		this.id = id;
+		this.name = name;
 		this.url = url;
 	}
 
@@ -183,7 +94,7 @@ class URLElement {
 	}
 
 	handleURL() {
-		console.log(this.url);
+		socket.emit("start-show", this.name, this.url)
 	}
 }
 
@@ -262,7 +173,7 @@ class Expandable {
 		let id = dataset["id"];
 
 		//URL Element
-		let urlElement = new URLElement("url-" + id, dataset["url"]);
+		let urlElement = new URLElement("url-" + id, name, dataset["url"]);
 		this.urlELements.push(urlElement);
 
 		let component = this.createShow(name, id);
@@ -279,8 +190,8 @@ class Expandable {
 		let id = dataset["id"];
 
 		//URL Element
-		let urlElement = new URLElement("url-" + id, dataset["url"]);
-		this.urlELements.push(urlElement);
+		//let urlElement = new URLElement("url-" + id, name, dataset["url"]);
+		//this.urlELements.push(urlElement);
 
 		let component = this.createSeason(name, id);
 		$(this.selector).append(component);
@@ -301,7 +212,7 @@ class Expandable {
 			let id = episode["id"];
 
 			//URL Element
-			let urlElement = new URLElement("url-" + id, episode["url"]);
+			let urlElement = new URLElement("url-" + id, name, episode["url"]);
 			this.urlELements.push(urlElement);
 
 			let component = this.createEpisode(name, id);
@@ -356,4 +267,8 @@ class Expandable {
 }
 
 let expandable = new Expandable("scan-result");
-expandable.create(jsonExample2);
+
+// SERVER COMMUNICATION
+socket.on('scan-result', result_data => {
+	expandable.create(result_data)
+});

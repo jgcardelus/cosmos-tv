@@ -79,6 +79,7 @@ class OpenedApp
 
     delete()
     {
+        socket.emit("close-app", this.id);
         if (this.isActive)
         {
             if (this.parent.openedApps.length > 1)
@@ -480,4 +481,12 @@ let apps = new Apps();
 // BACKEND COMMUNICATION
 socket.on('apps', data => {
     apps.create(data);
+});
+
+socket.on("opened-apps", data => {
+    openedApps.create(data);
+});
+
+socket.on("opened-apps-update", data => {
+    openedApps.update(data);
 });

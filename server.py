@@ -28,9 +28,19 @@ def validate_connection():
 
     fmk.frontend_start_seq()
 
+@server.on("close-app")
+def request_close_app(app_id):
+    fmk.close_app(app_id)
+
 # FRONTED COMUNICATION
 def emit(header, data):
     server.emit(header, data)
+
+def raise_error(message):
+    server.emit("error", message)
+
+def raise_not(message):
+    server.emit("notification", message)
 
 @server.on("start-app")
 def request_start(id_):
@@ -39,6 +49,10 @@ def request_start(id_):
 @server.on("start-app-search")
 def request_search(id_, search_url):
     fmk.start_app_search(id_, search_url)
+
+@server.on("start-show")
+def start_show(name, url):
+    fmk.start_show(name, url)
 
 # SERVER ROUTING
 @web.route('/')

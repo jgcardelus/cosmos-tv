@@ -10,9 +10,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 import server
 import config
-from services.show import Show, Episode
+import framework as fmk
+from services.show import Show, Episode, Season
 
 username = None
 password = None
@@ -40,10 +42,21 @@ class Netflix:
         self.scan_result = None
         self.skip_requested = False
 
+        self.last_show_parsed = 0
+        self.show_parse_length = 15
+
         self.shows = []
         self.show_name = None
         self.episode = None
         self.season = None
+
+
+        # HAS SENT OPENED APP
+        self.opened_app = False
+
+        # WAIT UNTIL SECONDS
+        self.sleep_time = 1
+        self.sleep_max_count = 5
 
         # SCAN SETTINGS
         self.max_scroll = 4
@@ -53,14 +66,16 @@ class Netflix:
         self.password = password
         self.netflix_user = netflix_user
 
-    def wait_until(self, xpath, html=None):
+    def wait_until(self, xpath, html=None, container=None):
         counter = 0
+        if container == None:
+            container = self.driver
         while True:
             try:
-                selector = self.driver.find_element_by_xpath(xpath)
+                selector = container.find_element_by_xpath(xpath)
                 attr = selector.get_attribute('innerHTML')
 
-                if counter == 10:
+                if counter == self.sleep_max_count:
                     break
 
                 if html == None:
@@ -70,23 +85,31 @@ class Netflix:
                 if attr == html:
                     break
                 else:
-                    time.sleep(1)
+                    time.sleep(self.sleep_time)
                     counter += 1
             except exceptions.NoSuchElementException:
-                if counter == 10:
+                if counter == self.sleep_max_count:
                     break
 
-                time.sleep(1)
+                time.sleep(self.sleep_time)
+                counter += 1
+            except exceptions.StaleElementReferenceException:
+                if counter == self.sleep_max_count:
+                    break
+
+                time.sleep(self.sleep_time)
                 counter += 1
 
-    def wait_until_css(self, css_selector, html=None):
+    def wait_until_css(self, css_selector, html=None, container=None):
         counter = 0
+        if container == None:
+            container = self.driver
         while True:
             try:
-                selector = self.driver.find_element_by_css_selector(css_selector)
+                selector = container.find_element_by_css_selector(css_selector)
                 attr = selector.get_attribute('innerHTML')
 
-                if counter == 10:
+                if counter == self.sleep_max_count:
                     break
 
                 if html == None:
@@ -96,37 +119,61 @@ class Netflix:
                 if attr == html:
                     break
                 else:
-                    time.sleep(1)
+                    time.sleep(self.sleep_time)
                     counter += 1
             except exceptions.NoSuchElementException:
-                if counter == 10:
+                if counter == self.sleep_max_count:
                     break
 
-                time.sleep(1)
+                time.sleep(self.sleep_time)
+                counter += 1
+            except exceptions.StaleElementReferenceException:
+                if counter == self.sleep_max_count:
+                    break
+
+                time.sleep(self.sleep_time)
                 counter += 1
 
     def start(self):
-        try:
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('--user-data-dir=' + config.data_dir_path)
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--user-data-dir=' + config.data_dir_path)
 
-            self.driver = webdriver.Chrome(executable_path=config.driver_path, chrome_options=chrome_options)
-            self.driver.get(self.url)
-            self.focus()
-            self.init_profile()
-        except exceptions.InvalidArgumentException:
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
+        self.driver = webdriver.Chrome(executable_path=config.driver_path, chrome_options=chrome_options)
+        self.get(self.url)
 
-            self.driver = webdriver.Chrome(executable_path=config.driver_path, chrome_options=chrome_options)
-            self.driver.get(self.url)
-            self.focus()
-            self.init_profile()
+    def render_shows(self):
+        start = self.last_show_parsed
+        end = self.last_show_parsed + self.show_parse_length
+        if self.last_show_parsed + self.show_parse_length >= len(self.shows):
+            end = len(self.shows)
+
+        self.last_show_parsed = end
+        if start != end:
+            # Create parser object
+            parser = fmk.Parser()
+            shows_json = parser.parse_shows(self.shows[start:end])
+            self.emit_scan_result(shows_json)
+
+    def render_opened_app(self):
+        parser = fmk.Parser()
+        if not self.opened_app:
+            opened_app_json = parser.parse_app(self.name, "", self.id_)
+            server.emit("opened-apps", opened_app_json)
+        else:
+            opened_app_json = parser.parse_app(self.name, "", self.id_)
+            server.emit("opened-apps-update", opened_app_json)
+
+    def get(self, url):
+        self.driver.get(url)
+        self.render_opened_app()
+        self.focus()
+        self.init_profile()
 
         self.scan()
+        if len(self.shows) > 0:
+            self.render_shows()
 
     def scroll_page(self):
         height = int(self.driver.execute_script("return document.body.offsetHeight"))
@@ -145,29 +192,42 @@ class Netflix:
                 break
 
     def scan(self):
-        print("Scanning")
+        try:
+            # Wait until main page has been loaded
+            self.wait_until('//ul[@class="tabbed-primary-navigation"]')
+            self.scroll_page()
+            self.driver.execute_script("window.scrollTo(0, 0);")
 
-        # Wait until main page has been loaded
-        self.wait_until('//ul[@class="tabbed-primary-navigation"]')
+            elements = self.driver.find_elements_by_class_name('slider-item')
+            self.shows = []
 
-        self.scroll_page()
-        self.driver.execute_script("window.scrollTo(0, 0);")
-        
-        elements = self.driver.find_elements_by_class_name('slider-item')
-    
-        shows = []
-        for element in elements:
-            try:
-                show_container = element.find_element_by_css_selector('p.fallback-text')
-                url_container = element.find_element_by_css_selector("a[role='link']")
+            counter = 0
+            max_count = 50
+            
+            if len(elements) < max_count:
+                max_count = len(elements)
 
-                show_name = show_container.get_attribute('innerHTML')
-                url = url_container.get_attribute('href')
+            while counter < max_count:
+                try:
+                    element = elements[counter]
+                    show_container = element.find_element_by_css_selector("p.fallback-text")
+                    url_container = element.find_element_by_css_selector("a[role='link']")
 
-                show = Show(show_name, url, element)
-                self.shows.append(show)
-            except exceptions.NoSuchElementException:
-                pass
+                    show_name = show_container.get_attribute('innerHTML')
+                    url = url_container.get_attribute('href')
+
+                    show = Show(show_name, url, element)
+                    self.shows.append(show)
+                    
+                except exceptions.NoSuchElementException:
+                    pass
+                    
+                counter += 1
+        except:
+            pass
+
+    def emit_scan_result(self, result_data):
+        server.emit("scan-result", result_data)
 
     def log_in(self):
         log_in_button = None
@@ -213,23 +273,31 @@ class Netflix:
         if log_in == None and profile_gate == None:
             time.sleep(1)
 
-    def parse_scan(self):
-        pass
-
     def start_show(self, name, url):
         show = None
         for iter_show in self.shows:
-            if iter_show.name == name: # and iter_show.url == url:
+            if iter_show.name == name and iter_show.url == url:
                 show = iter_show
                 break
         
         if show != None:
+            # Check if element contains episodes
             is_series = self.deep_scan(show)
+            
+            if not is_series:
+                # It is not a series, open player
+                self.get(show.url)
+            else:
+                # Create parser object
+                parser = fmk.Parser()
+                # Show the results
+                scan_result = parser.parse_series(show)
+                self.emit_scan_result(scan_result)
         else:
-            pass # Raise error in app
+            self.get(url)
 
     def deep_scan(self, show):
-        is_show = False
+        is_series = False
         try:
             more_info = show.container.find_element_by_css_selector('div.bob-jawbone-chevron')
             more_info.click()
@@ -242,26 +310,59 @@ class Netflix:
             self.wait_until_css('div.nfDropDown')
             dropbox = container.find_element_by_css_selector("div.nfDropDown")
             dropbox.click()
-            seasons_buttons = self.driver.find_elements_by_css_selector("li.sub-menu-item")
-
-            print(len(seasons_buttons))
-            for i, season_button in enumerate(seasons_buttons):
+            self.wait_until_css("a.sub-menu-link")
+            seasons_buttons = self.driver.find_elements_by_css_selector("a.sub-menu-link")
+            for i in range(len(seasons_buttons)):
                 if i > 0:
-                    dropbox.click()
-                print(season_button.get_attribute('innerHTML'))
-                season_button.click()
-            
-                container = self.driver.find_element_by_xpath('//div[@class="jawBoneFadeInPlaceContainer"]')
+                    # Click on the dropdown
+                    elem = self.driver.find_element_by_css_selector("div.nfDropDown")
+                    elem.click()
+                
+                # Click on season and get seasons name
+                self.wait_until_css("a.sub-menu-link")
+                select_buttons = self.driver.find_elements_by_css_selector("a.sub-menu-link")
+                season_name = select_buttons[i].get_attribute('innerHTML')
+                select_buttons[i].click()
+
+                season_info = season_name.split(' ')
+                season_number = int(season_info[1])
+
+                season = Season(season_number)
+
+                time.sleep(1)
+                container = self.driver.find_element_by_css_selector('div.episodesContainer')
+                # Select episodes in container
+                print("Select container")
+                self.wait_until_css('div.slider-item', container=container)
+                print("Container selected")
                 season_episodes = container.find_elements_by_css_selector('div.slider-item')
-                print(len(season_episodes))
+
                 for season_episode in season_episodes:
-                    episode_name_container = season_episode.find_element_by_css_selector('p.ellipsized')
-                    print(episode_name_container.get_attribute('innerHTML'))
+                    # Get name
+                    self.wait_until_css("div.episodeTitle p", container=season_episode)
+                    episode_name_container = season_episode.find_element_by_css_selector('div.episodeTitle p')
+                    episode_name = episode_name_container.get_attribute('innerHTML')
+                    
+                    # Get link
+                    self.wait_until('//a[@data-uia="play-button"]', container=season_episode)
+                    episode_url_container = season_episode.find_element_by_xpath('//a[@data-uia="play-button"]')
+                    episode_url = episode_url_container.get_attribute('href')
+                    
+                    # Get number
+                    self.wait_until_css("div.episodeNumber span", container=season_episode)
+                    episode_number_container = season_episode.find_element_by_css_selector("div.episodeNumber span")
+                    episode_number = int(episode_number_container.get_attribute('innerHTML'))
+                    
+                    episode = Episode(episode_name, episode_url, episode_number)
+                    season.episodes.append(episode)
 
+                show.seasons.append(season)
+
+            is_series = True
         except exceptions.NoSuchElementException:
-            print("Did not find it")
+            pass
 
-        return is_show
+        return is_series
 
     def focus(self):
         self.driver.maximize_window()

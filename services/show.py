@@ -12,8 +12,7 @@ class Season:
         self.episodes = []
 
 class Episode:
-    def __init__(self, name, url, number, container):
+    def __init__(self, name, url, number):
         self.name = name
         self.url = url
         self.number = number
-        self.container = container

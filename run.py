@@ -1,3 +1,3 @@
 import framework
 
-framework.test()
+framework.start()
