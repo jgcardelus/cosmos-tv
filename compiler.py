@@ -97,8 +97,8 @@ class Compiler:
 		if self.web_array == None:
 			self.load_web()
 		self.scan_document()
-		self.load_css()
-		self.load_js()
+		self.add_css()
+		self.add_js()
 		self.save_output()
 
 	def save_output(self):
@@ -159,7 +159,7 @@ class Compiler:
 			print("Component '%s' is non existant. Ignoring in build" % (component_name))
 			self.web_array[i] = ''
 
-	def load_css(self):
+	def add_css(self):
 		head_pos = 0
 		for i, line in enumerate(self.web_array):
 			found_state = line.find('</head>')
@@ -173,7 +173,7 @@ class Compiler:
 			print("		Adding %s to css paths" % css_path)
 			self.web_array.insert((head_pos - 1), css_string)
 
-	def load_js(self):
+	def add_js(self):
 		html_pos = 0
 		for i, line in enumerate(self.web_array):
 			if line.find('</html>') != -1:
