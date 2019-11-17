@@ -166,8 +166,14 @@ class OpenedApps
 
         let id = app["id"];
 
+        showName = app["show-name"];
+        if (showName == undefined)
+        {
+            showName = "";
+        }
+
         $('#' + id + ' .button h2').html(app["show"]);
-        $('#' + id + ' .button p').html(app["show-name"]);
+        $('#' + id + ' .button p').html(showName);
     }
 
     create(raw_dataset)
@@ -267,12 +273,18 @@ class OpenedApps
     {
         let show = app["show"];
         let appId = app["id"];
-        let episodeName = app["show-name"];
+        let showName = app["show-name"];
+
+        if (showName == undefined)
+        {
+            showName = ""
+        }
+
         let component = `
             <div class="card card-action side-button round" id="` + appId + `">
                 <button class="button primary round-left" id="act-` + appId + `">
                     <h2>`+ show +`</h2>
-                    <p class="padding-left">`+ episodeName +`</p>
+                    <p class="padding-left">`+ showName +`</p>
                 </button>
                 <button class="button secondary round-right" id="del-` + appId + `">
                     <span class="icons">close</span>

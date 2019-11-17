@@ -1,5 +1,8 @@
 import random
 import json
+import time
+
+from selenium.common import exceptions
 
 import config
 import server
@@ -104,10 +107,7 @@ class Parser:
         show_json = json.dumps(show_dict)
         return show_json
 
-    def parse_app(self, show, show_name, app_id):
-        if show_name == "":
-            show_name = "  "
-            
+    def parse_open_app(self, show, show_name, app_id):            
         open_app_dict = {"opened-apps": [
             {
                 "show": show,
@@ -119,12 +119,109 @@ class Parser:
         open_app_json = json.dumps(open_app_dict)
         return open_app_json
 
+class Wait_Until:
+    def __init__(self, driver):
+        self.driver = driver
+
+        self.counter = 0
+        self.sleep_time = 0.2
+        self.sleep_max_count = 250
+
+        self.is_xpath = False
+
+    def wait_xpath(self, element, html=None, container=None):
+        self.is_xpath = True
+        self.wait(element, html, container)
+
+    def wait_css(self, element, html=None,container=None):
+        self.is_xpath = False
+        self.wait(element, html, container)
+
+    def get_element_information(self, container, element):
+        selector = None
+        if self.is_xpath:
+            selector = container.find_element_by_xpath(element)
+        else:
+            selector = container.find_element_by_css_selector(element)
+        inner_html = selector.get_attribute('innerHTML')
+            
+        return inner_html
+
+    def wait(self, element, html=None, container=None):
+        self.counter = 0
+        if container == None:
+            container = self.driver
+        while True:
+            try:
+                inner_html = self.get_element_information(container, element)
+                
+                if self.counter == self.sleep_max_count:
+                    break
+
+                if html == None:
+                    # Inner HTML is not empty, then break, it has loaded
+                    if inner_html != "":
+                        break
+                elif inner_html == html:
+                    # If the innerHTML has the requested content, break
+                    break
+                else:
+                    self.sleep()
+            except exceptions.NoSuchElementException:
+                if self.counter == self.sleep_max_count:
+                    break
+
+                self.sleep()
+            except exceptions.StaleElementReferenceException:
+                if self.counter == self.sleep_max_count:
+                    break
+
+                self.sleep()
+
+    def sleep(self):
+        time.sleep(self.sleep_time)
+        self.counter += 1
+
+    def wait_different_xpath(self, element, html, container=None):
+        self.is_xpath = True
+        self.wait_different(element, html, container)
+
+    def wait_different_css(self, element, html, container=None):
+        self.is_xpath = False
+        self.wait_different(element, html, container)
+
+    def wait_different(self, element, html, container=None):
+        self.counter = 0
+        if container == None:
+            container = self.driver
+        while True:
+            try:
+                inner_html = self.get_element_information(container, element)
+                
+                if self.counter == self.sleep_max_count:
+                    break
+
+                if inner_html != html:
+                    # If the innerHTML is different from the requested content, break
+                    break
+                else:
+                    self.sleep()
+            except exceptions.NoSuchElementException:
+                if self.counter == self.sleep_max_count:
+                    break
+
+                self.sleep()
+            except exceptions.StaleElementReferenceException:
+                if self.counter == self.sleep_max_count:
+                    break
+
+                self.sleep()
 
 # START SEQUENCE
 def start():
     server.start()
 
-def frontend_start_seq():
+def start_frontend():
     load_apps()
 
 def load_apps():
@@ -163,11 +260,11 @@ def start_show(name, url):
         server.raise_not("There is no opened app at the moment.")
     
 
-def start_app(id_):
+def start_app(app_id):
     global opened_apps
     global active_app
 
-    if id_ == "netflix":
+    if app_id == "netflix":
         netflix = Netflix()
         netflix.id_ = generate_id_identifier(netflix.id_)
         opened_apps.append(netflix)
@@ -177,9 +274,6 @@ def start_app(id_):
             print("There is an active app")
         netflix.start()
 
-def start_app_search(id_, search_url):
-    print(id_, search_url)
-
 def close_app(app_id):
     global opened_apps
 
@@ -188,6 +282,9 @@ def close_app(app_id):
             open_app.close()
             opened_apps.pop(i)
             break
+
+def start_app_search(app_id, search_url):
+    print(app_id, search_url)
 
 
 def test():

@@ -26,11 +26,7 @@ def validate_connection():
     print("User connected, validating websocket connection")
     server.emit("connection_validated")
 
-    fmk.frontend_start_seq()
-
-@server.on("close-app")
-def request_close_app(app_id):
-    fmk.close_app(app_id)
+    fmk.start_frontend()
 
 # FRONTED COMUNICATION
 def emit(header, data):
@@ -42,13 +38,18 @@ def raise_error(message):
 def raise_not(message):
     server.emit("notification", message)
 
+# EVENTS
 @server.on("start-app")
-def request_start(id_):
-    fmk.start_app(id_)
+def request_start(app_id):
+    fmk.start_app(app_id)
+
+@server.on("close-app")
+def request_close_app(app_id):
+    fmk.close_app(app_id)
 
 @server.on("start-app-search")
-def request_search(id_, search_url):
-    fmk.start_app_search(id_, search_url)
+def request_search(app_id, search_url):
+    fmk.start_app_search(app_id, search_url)
 
 @server.on("start-show")
 def start_show(name, url):
