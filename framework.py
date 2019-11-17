@@ -125,7 +125,7 @@ class Wait_Until:
 
         self.counter = 0
         self.sleep_time = 0.2
-        self.sleep_max_count = 250
+        self.sleep_max_count = 60
 
         self.is_xpath = False
 
@@ -223,12 +223,28 @@ def start():
 
 def start_frontend():
     load_apps()
+    load_opened_apps()
+    load_scan_results()
 
 def load_apps():
     apps_file = open('services/services.json', 'r')
     apps = apps_file.read()
     server.emit('apps', apps)
-    
+
+def load_opened_apps():
+    global opened_apps
+
+    for opened_app in opened_apps:
+        opened_app.created_open_app = False
+        opened_app.render_opened_app()
+
+def load_scan_results():
+    global active_app
+    if active_app != None:
+        if len(active_app.shows) > 0:
+            active_app.last_show_parsed = 0
+            active_app.render_shows()
+
 def start_offline():
     server.start_offline()
 

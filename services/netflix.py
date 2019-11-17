@@ -46,7 +46,7 @@ class Netflix:
         self.skip_requested = False
 
         # OPENED APP VARIABLES
-        self.opened_app = False
+        self.created_open_app = False
 
         # SCAN SETTINGS
         self.shows = []
@@ -69,8 +69,7 @@ class Netflix:
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--user-data-dir=' + config.data_dir_path)
-
-        # START DRIVER
+        
         self.driver = webdriver.Chrome(executable_path=config.driver_path, chrome_options=chrome_options)
         self.get(self.url)
 
@@ -88,9 +87,9 @@ class Netflix:
         parser = fmk.Parser()
         opened_app_json = None
 
-        if not self.opened_app:
+        if not self.created_open_app:
             opened_app_json = parser.parse_open_app(self.name, "", self.id_)
-            self.opened_app = True
+            self.created_open_app = True
         else:
             opened_app_json = parser.parse_open_app(self.name, "", self.id_)
 
@@ -295,17 +294,20 @@ class Netflix:
     def deep_scan(self, show):
         is_series = False
         try:
-            container = self.get_show_container()
+            container = self.get_show_container(show)
             seasons_length = self.get_seasons_length(container)
             
+            wait = fmk.Wait_Until(self.driver)
             for i in range(seasons_length):
                 season_number = self.get_next_season(i)
                 season = Season(season_number)
+                
+                episode_load_wait = WebDriverWait(self.driver, 10)
+                element = episode_load_wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.episodeWrapper div.episodeLockup div.episodeTitle')))
 
                 container = self.driver.find_element_by_css_selector('div.episodesContainer')
-                print(container.get_attribute("innerHTML"))
+                # print(container.get_attribute("innerHTML"))
                 # Select episodes in container
-                self.wait_until_css('div.slider-item', container=container)
                 season_episodes = container.find_elements_by_css_selector('div.slider-item')
 
                 for season_episode in season_episodes:

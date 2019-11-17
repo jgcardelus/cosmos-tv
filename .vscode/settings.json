@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\jgcar\\AppData\\Local\\Programs\\Python\\Python36\\python.exe",
+    "python.pythonPath": "/usr/bin/python3",
     "files.watcherExclude": {
         "**/bin/**": true,
         "**/include/**": true,

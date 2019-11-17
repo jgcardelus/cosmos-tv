@@ -7,7 +7,8 @@ const changeTime = 200;
 const bounceTime = 75;
 const swipeThreshold = 80;
 const changeThreshold = 1 / 3;
-const scrollingSoftener = 0.4;
+const verticalScrollSoftener = 0.2;
+const verticalScrollThreshold = 20;
 
 class Tab {
     constructor(n, tabPage, tabButton) {
@@ -215,7 +216,10 @@ class Tabs {
                     this.prev();
                 }
             } else {
-                this.tabs[this.actualTab].tabPage.scroll(yDirection * scrollingSoftener);
+                if(Math.abs(yDirection) >= verticalScrollThreshold)
+                {
+                    this.tabs[this.actualTab].tabPage.scroll(yDirection * verticalScrollSoftener);
+                }
             }
         }
     }
