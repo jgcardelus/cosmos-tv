@@ -32,9 +32,10 @@ if config.settings_path != None:
                 netflix_user = app["netflix-user"]
 
 class Netflix:
-    def __init__(self):
+    def __init__(self, driver, window_handles):
         # BASIC VARIABLES
-        self.driver = None
+        self.driver = driver
+        self.window_handles = window_handles
         self.url = "https://www.netflix.com"
         self.name = "Netflix"
         self.id_ = "netflix"
@@ -54,7 +55,7 @@ class Netflix:
         self.episode = None
         self.season = None
 
-        self.max_scroll = 4
+        self.max_scroll = 2
         self.last_show_parsed = 0
         self.show_parse_length = 15
 
@@ -63,23 +64,13 @@ class Netflix:
         self.password = password
         self.netflix_user = netflix_user
 
-    def start(self):
-        # DEFINE DRIVER
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--user-data-dir=' + config.data_dir_path)
-        
-        self.driver = webdriver.Chrome(executable_path=config.driver_path, chrome_options=chrome_options)
-        self.get(self.url)
-
     def get(self, url):
         self.driver.get(url)
         self.render_opened_app()
         self.focus()
         self.init_profile()
 
-        self.scan(50)
+        self.scan(20)
         if len(self.shows) > 0:
             self.render_shows()
 

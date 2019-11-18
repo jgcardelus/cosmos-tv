@@ -4,6 +4,7 @@ from flask_socketio import SocketIO, emit
 import io
 import os
 import socket
+import time
 
 import config
 import compiler
@@ -41,11 +42,23 @@ def raise_not(message):
 # EVENTS
 @server.on("start-app")
 def request_start(app_id):
-    fmk.start_app(app_id)
+    fmk.start_app(app_id, True)
+
+@server.on("focus-app")
+def request_focus_app(app_id):
+    fmk.focus_app(app_id, False)
 
 @server.on("close-app")
 def request_close_app(app_id):
     fmk.close_app(app_id)
+
+@server.on("close-all")
+def request_close_all():
+    while len(fmk.opened_apps) > 0:
+        app_id = fmk.opened_apps[0].id_
+        fmk.close_app(app_id)
+        print(app_id)
+
 
 @server.on("start-app-search")
 def request_search(app_id, search_url):

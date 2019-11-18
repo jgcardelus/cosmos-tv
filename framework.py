@@ -2,6 +2,9 @@ import random
 import json
 import time
 
+from selenium import webdriver
+from selenium.common import exceptions
+from selenium.webdriver.common.keys import Keys
 from selenium.common import exceptions
 
 import config
@@ -11,7 +14,15 @@ import actuators
 # SERVICES IMPORTS
 from services.netflix import Netflix
 
-## FRAMEOWRK VARIABLES
+## FRAMEWORK VARIABLES
+# DEFINE DRIVER
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--user-data-dir=' + config.data_dir_path)
+
+driver = None
+
 # MEDIA VARS
 opened_apps = []
 active_app = None
@@ -276,31 +287,103 @@ def start_show(name, url):
         server.raise_not("There is no opened app at the moment.")
     
 
-def start_app(app_id):
+def start_driver():
+    global driver
+    global chrome_options
+
+    driver = webdriver.Chrome(executable_path=config.driver_path, chrome_options=chrome_options)
+    driver.execute_script("window.open('about:blank');")
+    windows_handles = driver.window_handles
+    window_handles = driver.window_handles[len(windows_handles) - 1]
+    driver.switch_to_window(window_handles)
+
+def create_app_environment():
+    global driver
+
+    driver.execute_script("window.open('about:blank');")
+
+    windows_handles = driver.window_handles
+    window_handles = driver.window_handles[len(windows_handles) - 1]
+
+    driver.switch_to_window(window_handles)
+
+    return window_handles
+
+
+
+def start_app(app_id, use_default_url):
     global opened_apps
     global active_app
+    global driver
+    global chrome_options
+    
+    if driver == None:
+        start_driver()
+
+    windows_handles = driver.window_handles
+    window_handles = driver.window_handles[len(windows_handles) - 1]
+    
+    if active_app != None:
+        window_handles = create_app_environment()
 
     if app_id == "netflix":
-        netflix = Netflix()
+        netflix = Netflix(driver, window_handles)
         netflix.id_ = generate_id_identifier(netflix.id_)
         opened_apps.append(netflix)
 
         active_app = netflix
-        if active_app != None:
-            print("There is an active app")
-        netflix.start()
+    
+    app = opened_apps[len(opened_apps) - 1]
+    if use_default_url:
+        app.get(app.url)
+
+    return app
+
+def focus_app(app_id, delete_requested):
+    global opened_apps
+    global active_app
+    global driver
+
+    try:
+        focused_app = None
+        focused_app_position = 0
+        for i, open_app in enumerate(opened_apps):
+            if open_app.id_ == app_id:
+                driver.switch_to_window(open_app.window_handles)
+                focused_app = open_app
+                focused_app_position = i
+                break
+
+        active_app = focused_app
+
+        if not delete_requested:
+            active_app.last_show_parsed = 0
+            active_app.render_shows()
+
+        return focused_app, focused_app_position
+    except exceptions.NoSuchWindowException:
+        return None, None
 
 def close_app(app_id):
     global opened_apps
+    global active_app
+    global driver
 
-    for i, open_app in enumerate(opened_apps):
-        if open_app.id_ == app_id:
-            open_app.close()
-            opened_apps.pop(i)
-            break
+    focused_app, i = focus_app(app_id, True)
+    if focused_app != None and i != None:
+        focused_app.driver.execute_script("window.close();")
+
+        if focused_app == active_app:
+            active_app = None
+
+        opened_apps.pop(i)
+        if len(opened_apps) == 0:
+            driver.quit()
+            driver = None
 
 def start_app_search(app_id, search_url):
-    print(app_id, search_url)
+    app = start_app(app_id, False)
+    app.get(search_url)
 
 
 def test():

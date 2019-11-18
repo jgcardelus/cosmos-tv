@@ -73,6 +73,7 @@ class OpenedApp
     {
         if (!this.isActive)
         {
+            socket.emit('focus-app', this.id);
             this.parent.activateApp(this.id);
         }
     }
@@ -80,13 +81,6 @@ class OpenedApp
     delete()
     {
         socket.emit("close-app", this.id);
-        if (this.isActive)
-        {
-            if (this.parent.openedApps.length > 1)
-            {
-                this.parent.openedApps[1].activate();
-            }
-        }
         this.parent.delete(this.id);
     }
 }
@@ -202,6 +196,11 @@ class OpenedApps
         {
             this.add(raw_dataset);
         }
+
+        let last_element = this.openedApps.length - 1;
+        let last_element_id = this.openedApps[last_element].id;
+
+        this.activateApp(last_element_id);
     }
 
     deleteAll()
@@ -211,6 +210,7 @@ class OpenedApps
             let appId = this.openedApps[i].id;
             this.delete(appId);
         }
+        socket.emit('close-all');
     }
 
     delete(id)
@@ -225,6 +225,14 @@ class OpenedApps
             if (openedApp.id == id)
             {
                 this.openedApps.splice(i, 1);
+                if (openedApp.isActive)
+                {
+                    if (this.openedApps.length >= 1)
+                    {
+                        let app = this.openedApps[0];
+                        app.activate();
+                    }
+                }
                 break;
             }
         }
