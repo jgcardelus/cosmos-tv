@@ -160,6 +160,14 @@ function startNotification(message, color, emphasis, time)
         		</div>`
 
     nContainer.html(notification_html);
+
+    $("#notification-container .button").addClass("mdc-ripple-surface");
+    $("#notification-container .button").attr("data-mdc-auto-init", "MDCRipple");
+
+    $("#notification-container .notification").addClass("mdc-elevation--z6");
+
+    mdc.autoInit();
+
     nContainer.animate({
         bottom: '1.5rem'
     }, 500);

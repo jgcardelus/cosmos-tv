@@ -557,16 +557,19 @@ input[type=text] {
 /* NOTIFICATIONS */
 #notification-container {
     position: absolute;
-    width: calc(100vw - 2rem);
-    height: var(--card-element-height);
+    width: 100vw;
+    height: calc(var(--card-element-height) + 1rem);
     bottom: 1.5rem;
-    left: 1rem;
+    left: 0rem;
     z-index: 0;
 }
 
 .notification {
-    height: 100%;
-    width: 100%;
+    height: calc(100% - 1rem);
+    width: calc(100% - 2rem);
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
     border-radius: var(--border-radius);
     display: -webkit-box;
     display: flex;

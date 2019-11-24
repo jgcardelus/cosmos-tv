@@ -81,10 +81,10 @@ class Netflix:
         if not self.created_open_app:
             opened_app_json = parser.parse_open_app(self.name, "", self.id_)
             self.created_open_app = True
+            server.emit("opened-apps", opened_app_json)
         else:
             opened_app_json = parser.parse_open_app(self.name, "", self.id_)
-
-        server.emit("opened-apps", opened_app_json)
+            server.emit("opened-apps-update", opened_app_json)
 
     def render_shows(self):
         start = self.last_show_parsed
