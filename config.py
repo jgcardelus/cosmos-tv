@@ -13,5 +13,5 @@ port = 8080
 # SELENIUM DRIVER
 driver_path = os.path.join(os.getcwd(), 'chrome-driver', 'chromedriver')
 # data_dir_path = os.path.join(os.getcwd(), 'chrome-driver', 'chrome-preferences')
-data_dir_path = '/home/jgcardelus/Desktop/Coding_Projects/CosmosTv-Settings/chrome-preferences'
-settings_path = '/home/jgcardelus/Desktop/Coding_Projects/CosmosTv-Settings/settings.json'
+data_dir_path = '/home/jgcardelus/Desktop/coding-projects/cosmos-tv-settings/chrome-preferences'
+settings_path = '/home/jgcardelus/Desktop/coding-projects/cosmos-tv-settings/settings.json'
