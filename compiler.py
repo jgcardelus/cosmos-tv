@@ -1,6 +1,6 @@
 import os
 import sys
-    
+import platform
 
 path = 'templates/'
 components = 'static/components'
