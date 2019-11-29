@@ -7,7 +7,7 @@ The server has been created and we are working now on the HTML page which will d
 ## How to use
 Open a terminal in CosmosTv's directory and type
 ```
-python3 run.py
+sudo python3 run.py
 ```
 This will "compile" the page and start the server. Once the server has started it will display the web direction in a line similar to this:
 ```
