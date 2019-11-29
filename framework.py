@@ -1,3 +1,5 @@
+from libs import Path
+import os
 import random
 import json
 import time
@@ -238,7 +240,8 @@ def start_frontend():
     load_scan_results()
 
 def load_apps():
-    apps_file = open(config.settings_path, 'r')
+    apps_path = Path('services/services.json').path
+    apps_file = open(apps_path, 'r')
     apps = apps_file.read()
     server.emit('apps', apps)
 

@@ -91,6 +91,7 @@ class Compiler:
 		output_file = open(self.output_file, 'w+')
 		output_file.writelines(self.web_array)
 		output_file.close()
+		os.chdir(self.initial_cwd)
 		print("Magic saved")
 
 	def load_web(self):
