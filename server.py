@@ -1,3 +1,4 @@
+from libs import Path, Compiler, Compiler_Component
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 
@@ -7,7 +8,6 @@ import socket
 import time
 
 import config
-import compiler
 
 import framework as fmk
 
@@ -77,7 +77,9 @@ def index():
 def change_frontend_connection(ip_addr):
     global port
 
-    file_path = os.path.join(os.getcwd(), 'static/framework.js')
+    framework_path = Path('static/framework.js').path
+
+    file_path = os.path.join(os.getcwd(), framework_path)
     client_server = open(file_path, 'r')
     client_server_lines = client_server.readlines()
     for i, line in enumerate(client_server_lines):
@@ -98,6 +100,15 @@ def get_ip():
     s.close()
     return ip_addr
 
+def compile_app():
+    if config.DEBUG:
+        input_file = 'app.html'
+        path = Path('templates/').path
+        compontents = Path('static/components').path
+        output_file = 'out_app.html'
+
+        compiler = Compiler(input_file, path, compontents, output_file)
+        compiler.start()
 
 def start():
     global port
@@ -105,8 +116,7 @@ def start():
     ip_addr = get_ip()
     change_frontend_connection(ip_addr)
 
-    if config.DEBUG:
-        compiler.start()
+    compile_app()
 
     connection_url = 'http://' + ip_addr + ':' + str(port)
     print("Server started at ip: %s" % (connection_url))
@@ -119,8 +129,7 @@ def start_offline():
     ip_addr = "10.42.0.1"
     change_frontend_connection(ip_addr)
 
-    if config.DEBUG:
-        compiler.start()
+    compile_app()
 
     connection_url = 'http://' + ip_addr + ':' + str(port)
     print("Server started at ip: %s" % (connection_url))

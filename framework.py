@@ -238,7 +238,7 @@ def start_frontend():
     load_scan_results()
 
 def load_apps():
-    apps_file = open('services/services.json', 'r')
+    apps_file = open(config.settings_path, 'r')
     apps = apps_file.read()
     server.emit('apps', apps)
 
