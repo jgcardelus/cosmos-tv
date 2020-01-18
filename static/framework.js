@@ -164,7 +164,7 @@ function startNotification(message, color, emphasis, time)
     $("#notification-container .button").addClass("mdc-ripple-surface");
     $("#notification-container .button").attr("data-mdc-auto-init", "MDCRipple");
 
-    $("#notification-container .notification").addClass("mdc-elevation--z6");
+    $("#notification-container .notification").addClass("mdc-elevation--z8");
 
     mdc.autoInit();
 
@@ -206,7 +206,7 @@ function endNotification()
 
 function raiseNotification(message, time)
 {
-    startNotification(message, 'primary', 'secondary', time);
+    startNotification(message, 'white-bg', 'white-bg', time);
 }
 
 function raiseError(message, time)

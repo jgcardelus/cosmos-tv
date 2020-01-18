@@ -160,14 +160,10 @@ class OpenedApps
 
         let id = app["id"];
 
-        showName = app["show-name"];
-        if (showName == undefined)
-        {
-            showName = "";
-        }
+        let showName = app["show-name"];
 
-        $('#' + id + ' .button h2').html(app["show"]);
-        $('#' + id + ' .button p').html(showName);
+        $('.button#act-' + id + ' h2').html(app["show"]);
+        $('.button#act-' + id + ' p').html(showName);
     }
 
     create(raw_dataset)

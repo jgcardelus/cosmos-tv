@@ -1,6 +1,7 @@
 from libs import Path, Compiler, Compiler_Component
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
+from engineio.payload import Payload
 
 import io
 import os
@@ -13,6 +14,7 @@ import framework as fmk
 
 # SERVER VARS
 port = config.port
+Payload.max_decode_packets = 24
 
 # CREATE SERVER
 web = Flask("cosmostv")
@@ -59,7 +61,6 @@ def request_close_all():
         fmk.close_app(app_id)
         print(app_id)
 
-
 @server.on("start-app-search")
 def request_search(app_id, search_url):
     fmk.start_app_search(app_id, search_url)
@@ -67,6 +68,63 @@ def request_search(app_id, search_url):
 @server.on("start-show")
 def start_show(name, url):
     fmk.start_show(name, url)
+
+@server.on("skip")
+def skip():
+    fmk.skip()
+
+@server.on("forwards")
+def forwards():
+    fmk.forwards()
+
+@server.on("backwards")
+def backwards():
+    fmk.backwards()
+
+@server.on("fullscreen")
+def fullscreen():
+    fmk.fullscreen()
+
+@server.on("play")
+def play():
+    fmk.play()
+
+@server.on("next-show")
+def next_show():
+    fmk.next_show()
+
+@server.on("volume")
+def set_volume(val):
+    fmk.set_volume(val)
+
+@server.on("mute")
+def set_mute():
+    fmk.set_mute()
+
+@server.on('mouse-canvas-move')
+def mouse_canvas_move(raw_coordinates):
+    if not fmk.moving_mouse:
+        fmk.mouse_canvas_move(raw_coordinates)
+
+@server.on('mouse-move')
+def mouse_move(x, y):
+    fmk.mouse_move(x, y)
+
+@server.on('mouse-left')
+def mouse_left():
+    fmk.mouse_left()
+
+@server.on('mouse-right')
+def mouse_right():
+    fmk.mouse_right()
+
+@server.on('key-pressed')
+def key_pressed(key):
+    fmk.key_pressed(key)
+
+@server.on('scroll')
+def scroll(x, y):
+    fmk.scroll(x, y)
 
 # SERVER ROUTING
 @web.route('/')
@@ -105,7 +163,7 @@ def compile_app():
         input_file = 'app.html'
         path = Path('templates/').path
         compontents = Path('static/components').path
-        output_file = 'out_app.html'
+        output_file = 'out-app.html'
 
         compiler = Compiler(input_file, path, compontents, output_file)
         compiler.start()

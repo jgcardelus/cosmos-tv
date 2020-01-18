@@ -5,13 +5,13 @@
     <h1 class="header">Binging now</h1>
     <div class="card-container">
         <div class="card card-action round" id="main-controls">
-            <button class="button round-left primary">
+            <button class="button round-left primary" id="next-show">
                 <span class="icons">fast_forward</span>
             </button>
-            <button class="button secondary">
+            <button class="button secondary" id="play">
                 <span class="icons">play_arrow</span>
             </button>
-            <button class="button round-right primary">
+            <button class="button round-right primary" id="fullscreen">
                 <span class="icons">fullscreen</span>
             </button>
         </div>
@@ -22,21 +22,18 @@
                 <h2>Time</h2>
             </div>
             <div class="section-action section-margin" id="time-control">
-                <p>12:00 / 50:00</p>
-                <div>
-                    <button class="round-button round-button-big" id="go-backwards">
-                        <span class="icons">replay_10</span>
-                    </button>
-                    <button class="round-button round-button-big" id="go-forwards">
-                        <span class="icons">forward_10</span>
+                <button class="round-button round-button-big" id="go-backwards">
+                    <span class="icons">replay_10</span>
+                </button>
+                <button class="round-button round-button-big" id="go-forwards">
+                    <span class="icons">forward_10</span>
+                </button>
+                <div id="skip">
+                    <button class="button button-icon button-space round primary">
+                        <span class="icons">skip_next</span>
+                        <p>Skip</p>
                     </button>
                 </div>
-            </div>
-            <div class="section-action section-margin" id="skip">
-                <button class="button button-icon button-space round primary">
-                    <span class="icons">skip_next</span>
-                    <p>Skip</p>
-                </button>
             </div>
         </div>
         <div class="card section-card round">
@@ -44,8 +41,8 @@
                 <h2>Volume</h2>
             </div>
             <div class="section-action section-margin" id="volume-control">
-                <input type="range" class="slider">
-                <button class="button button-icon button-space round primary">
+                <input type="range" class="slider" id="volume-slider">
+                <button class="button button-icon button-space round primary" id="mute">
                     <span class="icons">volume_off</span>
                     <p>Mute</p>
                 </button>
@@ -57,8 +54,8 @@
             </div>
             <div class="section-action" id="watching-now">
                 <button class="button round-bottom primary fill">
-                    <p>Big Mouth</p>
-                    <p>S01E03</p>
+                    <p id="show-name">CosmosTv</p>
+                    <p id="season-episode-info">JGC</p>
                 </button>
             </div>
         </div>

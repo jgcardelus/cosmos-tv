@@ -38,9 +38,62 @@ function deactivateSkip(animationTime=skipAnimationTime)
 
 deactivateSkip(0);
 
-//BUTTONS BEHAVIOUR
-$('#go-backwards').on('click', () => {
-    console.log("go backwards");
+socket.on("activate-skip", () => {
+    activateSkip();
 });
 
-$('go-forwards').on('click')
+socket.on("deactivate-skip", () => {
+    deactivateSkip();
+});
+
+$('#skip').on('click', () => {
+    deactivateSkip();
+    socket.emit('skip');
+});
+
+//BUTTONS BEHAVIOUR
+$('#fullscreen').on('click', () => {
+    socket.emit('fullscreen');
+});
+
+$('#play').on('click', () => {
+    socket.emit('play');
+});
+
+$('#next-show').on('click', () => {
+    socket.emit('next-show');
+});
+
+$('#go-backwards').on('click', () => {
+    socket.emit('backwards');
+});
+
+$('#go-forwards').on('click', () => {
+    socket.emit('forwards');
+});
+
+//SOUND
+socket.on('volume', value => {
+    $('#volume-slider').val(value);
+});
+
+$('#mute').on('click', () =>
+{
+    socket.emit('mute');
+});
+
+$('#volume-slider').on('change', () =>
+{
+    value = parseInt($('#volume-slider').val());
+    console.log(value);
+    socket.emit('volume', value);
+});
+
+//SHOW INFO
+socket.on('show-name', show_name => {
+    $('#show-name').html(show_name);
+});
+
+socket.on('season-episode-info', value => {
+    $('#season-episode-info').html(value);
+});

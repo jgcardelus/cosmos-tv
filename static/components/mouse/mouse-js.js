@@ -60,3 +60,15 @@ $('#switch-mouse-mode').on("click", () => {
 });
 
 activateMouseControl(0);
+
+mouseTabs.on('page-change', () => 
+{
+    if (mouseTabs.tabs.actualTab == 1)
+    {
+        console.log('start');
+    }
+    else
+    {
+        console.log('close');
+    }
+});

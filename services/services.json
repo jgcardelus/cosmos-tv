@@ -5,14 +5,6 @@
             "id": "netflix",
             "search-prefix": "https://www.netflix.com/search?q=",
             "operator": "%20"
-        }        
-    ],
-    "others": [
-        {
-            "name": "Amazon Prime",
-            "id": "amazon-prime",
-            "search-prefix": "https://www.primevideo.com/search/ref=atv_nb_sr?phrase=",
-            "operator": "+"
         },
         {
             "name": "Youtube",
@@ -20,6 +12,14 @@
             "search-prefix": "https://www.youtube.com/results?search_query=",
             "operator": "+"
         },
+        {
+            "name": "Prime Video",
+            "id": "prime-video",
+            "search-prefix": "https://www.primevideo.com/search/ref=atv_nb_sr?phrase=",
+            "operator": "+"
+        }       
+    ],
+    "others": [
         {
             "name": "Movistar+",
             "id": "movistar-plus",

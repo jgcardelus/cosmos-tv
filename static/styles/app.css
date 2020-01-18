@@ -287,6 +287,10 @@ p {
     background-color: rgb(255, 255, 255);
 }
 
+.black-bg {
+    background-color: rgb(0, 0, 0);
+}
+
 .error {
     background-color: #B00020;
     color: var(--font-light);
